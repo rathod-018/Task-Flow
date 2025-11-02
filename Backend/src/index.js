@@ -1,13 +1,19 @@
 import express from 'express'
+import dotenv from "dotenv"
+import { app } from "./app.js"
+import { dbConnection } from "./db/db.js"
+
+dotenv.config({ path: "../.env" })
+
+app.use(express.json())
 
 
-const app = express()
-
-app.get("/", (req, res) => {
-    res.send("Hello World")
-})
 
 
-app.listen(3000, () => {
-    console.log("Server started at port 3000")
-})
+const port = process.env.PORT || 3000
+dbConnection().then(
+    app.listen(port, () => {
+        console.log(`Server started at port ${port}`)
+    })
+)
+
