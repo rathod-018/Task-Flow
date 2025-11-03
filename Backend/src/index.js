@@ -7,6 +7,14 @@ dotenv.config({ path: "../.env" })
 
 app.use(express.json())
 
+// error handling middleware for custum json response
+app.use((err, _, res, _) => {
+    res.status(err.code || 500).json({
+        success: false,
+        message: err.message || "Internal server error",
+        errors: err.errors || []
+    })
+})
 
 
 
