@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 const boardMembershipSchema = new Schema(
     {
-        board_id: {
+        boardId: {
             type: mongoose.Types.ObjectId,
             ref: "Board",
             required: true
@@ -12,21 +12,21 @@ const boardMembershipSchema = new Schema(
             enum: ["owner", "member"],
             default: "member"
         },
-        joined_at: {
+        joinedAt: {
             type: Date,
             default: Date.now
         },
-        user_id: {
+        userId: {
             type: mongoose.Types.ObjectId,
             ref: "User",
             required: true
         },
-        invited_by: {
+        invitedBy: {
             type: mongoose.Types.ObjectId,
             ref: "User",
             required: true
         },
-        invite_status: {
+        inviteStatus: {
             type: String,
             enum: ["pending", "accepted", "rejected"],
             default: "pending"

@@ -3,7 +3,7 @@ import mongoose, { Schema } from "mongoose";
 
 const taskShema = new Schema(
     {
-        list_id: {
+        listId: {
             type: mongoose.Types.ObjectId,
             ref: "List",
             required: true
@@ -24,7 +24,7 @@ const taskShema = new Schema(
             enum: ["todo", "in_progress", "done"],
             default: "todo"
         },
-        due_date: {
+        dueDate: {
             type: Date,
             required: true,
             validate: {
@@ -34,14 +34,15 @@ const taskShema = new Schema(
                 message: "Invalid Due date"
             }
         },
-        assignee_id: {
+        assigneeId: {
             type: mongoose.Types.ObjectId,
             ref: "User",
             default: null
         }
-    }, {
-    timestamps: true
-})
+    },
+    {
+        timestamps: true
+    })
 
 
 export const Task = mongoose.model("Task", taskShema)

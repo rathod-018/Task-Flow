@@ -3,7 +3,7 @@ import mongoose, { Schema } from "mongoose";
 
 const subtaskShema = new Schema(
     {
-        task_id: {
+        taskId: {
             type: mongoose.Types.ObjectId,
             ref: "Task",
             required: true

@@ -12,7 +12,7 @@ const boardSchema = new Schema(
             required: true,
             trim: true,
         },
-        owner_id: {
+        ownerId: {
             type: mongoose.Types.ObjectId,
             ref: "User",
             required: true
