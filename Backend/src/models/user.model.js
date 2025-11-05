@@ -28,7 +28,7 @@ const userShema = new Schema(
             type: String,
             required: true,
         },
-        avator: {
+        avatar: {
             url: { type: String },
             public_id: { type: String }
         },
