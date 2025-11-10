@@ -35,7 +35,6 @@ const userShema = new Schema(
         refreshToken: {
             type: String
         }
-
     },
     {
         timestamps: true
@@ -52,4 +51,4 @@ userShema.methods.validatePassword = async function (password) {
 }
 
 
-export const User = mongoose.models("User", userShema)
+export const User = mongoose.model("User", userShema)
