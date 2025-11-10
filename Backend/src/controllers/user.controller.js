@@ -68,6 +68,37 @@ const registerUser = asyncHandler(async (req, res) => {
     )
 })
 
+const loginUser = asyncHandler(async (req, res) => {
+    const { email, password } = req.body
+
+    if (!email) {
+        throw new ApiError("Email is required")
+    }
+    if (!password) {
+        throw new ApiError(400, "Password is required")
+    }
+
+    const user = await User.findOne({ email })
+    if (!user) {
+        throw new ApiError(400, "Invalid Email")
+    }
+
+    const validatePass = await bcrypt.compare(password, user.password)
+    if (!validatePass) {
+        throw new ApiError(400, "Invalid password")
+    }
+
+    const otp = await otpGenerator(email)
+
+    const response = await sendOtp(email, otp)
+
+    if (!response) {
+        throw new ApiError(400, "Error while sending otp")
+    }
+
+    res.status(200, [], "Otp sent successfully")
+
+})
 
 const verifyOtp = asyncHandler(async (req, res) => {
     const { email, otp } = req.body
@@ -112,10 +143,10 @@ const verifyOtp = asyncHandler(async (req, res) => {
                 public_id: tempUser.avatar.public_id
             }
         })
+        // await TempUser.deleteOne({ email })
     }
 
     const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id)
-
 
     const options = {
         httpOnly: true,
@@ -132,8 +163,6 @@ const verifyOtp = asyncHandler(async (req, res) => {
 
 })
 
-
-const loginUser = asyncHandler(async (req, res) => { })
 
 const logOutUser = asyncHandler(async (req, res) => { })
 
