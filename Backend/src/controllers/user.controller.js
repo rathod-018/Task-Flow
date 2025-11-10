@@ -1,9 +1,20 @@
+import bcrypt from "bcrypt"
+import { User } from "../models/user.model.js"
+import { TempUser } from "../models/tempUser.model.js"
+import { OtpModel } from "../models/otp.model.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
 import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
-import { User } from "../models/user.model.js"
 import { generateAccessAndRefreshToken } from "../utils/tokenGenerator.js"
-import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cludinary.js"
+import {
+    uploadOnCloudinary,
+    deleteFromCloudinary
+} from "../utils/cludinary.js"
+import { otpGenerator } from "../utils/otpGenerator.js"
+import { sendOtp } from "../utils/sendOtp.js"
+
+
+
 
 const registerUser = asyncHandler(async (req, res) => {
     const { name, username, email, password } = req.body
@@ -20,39 +31,90 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "User with same username or email alredy exist")
     }
 
-    const avatarLocalPath = req.file?.path
-
-    let avatarResponse = {}
-
-    if (avatarLocalPath) {
-        avatarResponse = await uploadOnCloudinary(avatarLocalPath)
-    }
-    else {
-        const firstLetter = username.charAt(0).toUpperCase()
-        avatarResponse.url = `https://ui-avatars.com/api/?name=${firstLetter}&background=random&color=fff`
-        avatarResponse.public_id = null
+    const firstLetter = username.charAt(0).toUpperCase()
+    let avatarResponse = {
+        url: `https://ui-avatars.com/api/?name=${firstLetter}&background=random&color=fff`,
+        public_id: null
     }
 
-    const user = await User.create({
+    const hashPass = await bcrypt.hash(password, 10)
+
+    const createdTempUser = await TempUser.create({
         name,
         username,
         email,
-        password,
+        password: hashPass,
         avatar: {
             url: avatarResponse?.url,
             public_id: avatarResponse?.public_id
         }
     })
 
-
-
-    let createdUser = await User.findById(user._id).select("-password ")
-
-    if (!createdUser) {
-        throw new ApiError(400, "Error while creating user")
+    if (!createdTempUser) {
+        throw new ApiError(400, "Error while creating User")
     }
 
-    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(createdUser._id)
+    const otp = await otpGenerator(email)
+
+    // continue with email sending for otp
+    const otpResponse = await sendOtp(email, otp)
+
+    if (!otpResponse) {
+        throw new ApiError(400, "Error while sending otp")
+    }
+
+    res.status(201).json(
+        new ApiResponse(200, [], "OTP sent successfully")
+    )
+})
+
+
+const verifyOtp = asyncHandler(async (req, res) => {
+    const { email, otp } = req.body
+
+    if (!otp) {
+        throw new ApiError(400, "Otp is required")
+    }
+
+    if (!email) {
+        throw new ApiError(400, "Email is required")
+    }
+
+    const getOtp = await OtpModel.findOne({ email })
+
+    if (getOtp.expiresAt < Date.now()) {
+        await OtpModel.deleteOne({ email })
+        throw new ApiError(400, "OTP Expired")
+    }
+
+
+    if (getOtp.otp !== otp) {
+        throw new ApiError(400, "Invalid OTP")
+    }
+
+
+    let user = await User.findOne({ email })
+
+    if (!user) {
+        const tempUser = await TempUser.findOne({ email })
+
+        if (!tempUser) {
+            throw new ApiError(400, "Error while verifying OTP")
+        }
+
+        user = await User.create({
+            name: tempUser.name,
+            username: tempUser.username,
+            email: tempUser.email,
+            password: tempUser.password,
+            avatar: {
+                url: tempUser.avatar.url,
+                public_id: tempUser.avatar.public_id
+            }
+        })
+    }
+
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id)
 
 
     const options = {
@@ -60,17 +122,19 @@ const registerUser = asyncHandler(async (req, res) => {
         secure: true
     }
 
-    res.status(201)
+    res.status(200)
         .cookie("accessToken", accessToken, options)
         .cookie("refreshToken", refreshToken, options)
         .json(
-            new ApiResponse(200, createdUser, "User registerd successfully")
+            new ApiResponse(200, user, "User registerd successfully")
         )
 
+
 })
+
 
 const loginUser = asyncHandler(async (req, res) => { })
 
 const logOutUser = asyncHandler(async (req, res) => { })
 
-export { registerUser }
+export { registerUser, loginUser, verifyOtp }
