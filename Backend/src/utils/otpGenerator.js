@@ -10,6 +10,12 @@ const otpGenerator = async (email) => {
         otp += Math.floor(Math.random() * 10)
     }
 
+    const otpExist = await OtpModel.findOne({ email })
+
+    if (otpExist) {
+        await OtpModel.deleteOne({ email })
+    }
+
     await OtpModel.create({
         email,
         otp,

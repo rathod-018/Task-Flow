@@ -96,7 +96,9 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Error while sending otp")
     }
 
-    res.status(200, [], "Otp sent successfully")
+    res.status(200).json(
+        new ApiResponse(200, [], "Otp sent successfully")
+    )
 
 })
 
@@ -143,7 +145,7 @@ const verifyOtp = asyncHandler(async (req, res) => {
                 public_id: tempUser.avatar.public_id
             }
         })
-        // await TempUser.deleteOne({ email })
+        await TempUser.deleteOne({ email })
     }
 
     const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id)
@@ -164,6 +166,30 @@ const verifyOtp = asyncHandler(async (req, res) => {
 })
 
 
-const logOutUser = asyncHandler(async (req, res) => { })
+const logOutUser = asyncHandler(async (req, res) => {
+    await User.findByIdAndUpdate(req.user?._id, {
+        $unset: {
+            refreshToken: 1
+        }
+    })
 
-export { registerUser, loginUser, verifyOtp }
+    const options = {
+        secure: true,
+        httpOnly: true
+    }
+
+    res.status(200)
+        .clearCookie("accessToken", options)
+        .clearCookie("refreshToken", options)
+        .json(
+            new ApiResponse(200, {}, "User Logged out")
+        )
+
+})
+
+export {
+    registerUser,
+    loginUser,
+    verifyOtp,
+    logOutUser
+}

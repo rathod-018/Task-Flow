@@ -6,7 +6,7 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-const uploadOnCludinary = async (localPath) => {
+const uploadOnCloudinary = async (localPath) => {
     try {
         if (!localPath) return null
         const uploadResult = await cloudinary.uploader.upload(localPath, { resource_type: "auto" })
@@ -20,7 +20,7 @@ const uploadOnCludinary = async (localPath) => {
 }
 
 
-const deleteFromCludinary = async (public_id) => {
+const deleteFromCloudinary = async (public_id) => {
     try {
 
         const response = await cloudinary.uploader.destroy(public_id, { resource_type: "auto" })
@@ -33,4 +33,4 @@ const deleteFromCludinary = async (public_id) => {
     }
 }
 
-export { uploadOnCludinary, deleteFromCludinary }
+export { uploadOnCloudinary, deleteFromCloudinary }

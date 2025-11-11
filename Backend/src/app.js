@@ -21,7 +21,11 @@ app.use((err, req, res, next) => {
 })
 
 
+// import routes
+import userRoutes from "./routes/user.route.js"
 
+
+app.use("/api/v1/user", userRoutes)
 
 
 
