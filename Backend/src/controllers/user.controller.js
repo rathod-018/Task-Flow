@@ -17,21 +17,19 @@ import { sendOtp } from "../utils/sendOtp.js"
 
 
 const registerUser = asyncHandler(async (req, res) => {
-    const { name, username, email, password } = req.body
+    const { name, email, password } = req.body
 
-    if ([name, username, email, password].some((item) => !item || item?.trim() === "")) {
+    if ([name, email, password].some((item) => !item || item?.trim() === "")) {
         throw new ApiError(400, "All fields are reqired")
     }
 
-    const userExist = await User.findOne({
-        $or: [{ username }, { email }]
-    })
+    const userExist = await User.findOne({ email })
 
     if (userExist) {
-        throw new ApiError(400, "User with same username or email alredy exist")
+        throw new ApiError(400, "User with same email alredy exist")
     }
 
-    const firstLetter = username.charAt(0).toUpperCase()
+    const firstLetter = name.charAt(0).toUpperCase()
     let avatarResponse = {
         url: `https://ui-avatars.com/api/?name=${firstLetter}&background=random&color=fff`,
         public_id: null
@@ -41,7 +39,6 @@ const registerUser = asyncHandler(async (req, res) => {
 
     const createdTempUser = await TempUser.create({
         name,
-        username,
         email,
         password: hashPass,
         avatar: {
@@ -137,7 +134,6 @@ const verifyOtp = asyncHandler(async (req, res) => {
 
         user = await User.create({
             name: tempUser.name,
-            username: tempUser.username,
             email: tempUser.email,
             password: tempUser.password,
             avatar: {

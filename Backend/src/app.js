@@ -1,5 +1,6 @@
 import express from "express"
 import cookieparser from "cookie-parser"
+import cors from "cors"
 
 const app = express()
 
@@ -10,6 +11,12 @@ app.use(express.static("public"))
 app.use(express.urlencoded())
 app.use(cookieparser())
 
+
+// cors setup
+app.use(cors({
+    origin: ["http://localhost:5173"],
+    credentials: true
+}))
 
 // error handling middleware for custum json response
 app.use((err, req, res, next) => {
@@ -33,8 +40,8 @@ app.use("/api/v1/user", userRoutes)
 
 
 
-app.get("/", (req, res) => {
-    res.send("Hello World")
+app.get("/api/v1", (req, res) => {
+    res.send("Hello from Express Server")
 })
 
 
