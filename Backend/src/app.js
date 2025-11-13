@@ -18,14 +18,6 @@ app.use(cors({
     credentials: true
 }))
 
-// error handling middleware for custum json response
-app.use((err, req, res, next) => {
-    res.status(err.code || 500).json({
-        success: false,
-        message: err.message || "Internal server error",
-        errors: err.errors || []
-    })
-})
 
 
 // import routes
@@ -43,6 +35,20 @@ app.use("/api/v1/user", userRoutes)
 app.get("/api/v1", (req, res) => {
     res.send("Hello from Express Server")
 })
+
+
+
+// error handling middleware for custum json response
+app.use((err, req, res, next) => {
+    res.status(err.statusCode || 500).json({
+        statusCode: err.statusCode || 500,
+        success: false,
+        message: err.message || "Internal server error",
+        errors: err.errors || []
+    });
+});
+
+
 
 
 export { app }

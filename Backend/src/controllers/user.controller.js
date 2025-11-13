@@ -22,6 +22,10 @@ const registerUser = asyncHandler(async (req, res) => {
     if ([name, email, password].some((item) => !item || item?.trim() === "")) {
         throw new ApiError(400, "All fields are reqired")
     }
+    const tempUserExist = await TempUser.findOne({ email })
+    if (tempUserExist) {
+        await TempUser.findByIdAndDelete(tempUserExist?._id)
+    }
 
     const userExist = await User.findOne({ email })
 
@@ -69,7 +73,7 @@ const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body
 
     if (!email) {
-        throw new ApiError("Email is required")
+        throw new ApiError(400, "Email is required")
     }
     if (!password) {
         throw new ApiError(400, "Password is required")
