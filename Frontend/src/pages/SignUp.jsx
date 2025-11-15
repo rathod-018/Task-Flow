@@ -1,11 +1,14 @@
 import React, { useId, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import { useUserContext } from "../context/UserContext";
 
 function SignUp() {
+  const { setUserEmail } = useUserContext();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -17,23 +20,29 @@ function SignUp() {
     if (!name) {
       setError("Please enter name");
       return;
-    } else if (!email.includes("@")) {
+    }
+    if (!email.includes("@")) {
       setError("Invalid email address");
       return;
-    } else if (!password) {
+    }
+    if (!password) {
       setError("Plese enter password");
       return;
+    }
+    if (!username) {
+      setError("plese enter username");
     }
 
     try {
       const response = await api.post("user/register", {
         name,
+        username,
         email,
         password,
       });
 
-      console.log(response.data.message);
-      localStorage.setItem("email", email);
+      console.log(response);
+      setUserEmail(email);
       navigate("/verify-otp");
     } catch (error) {
       const msg =
@@ -69,6 +78,19 @@ function SignUp() {
                 value={name}
                 onChange={(e) => {
                   setName(e.target.value);
+                }}
+              />
+            </div>
+            <div>
+              <label htmlFor="username">Full name</label>
+              <input
+                className="text-black"
+                type="text"
+                id="username"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => {
+                  setUsername(e.target.value);
                 }}
               />
             </div>

@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
+import { useUserContext } from "../context/UserContext";
 
 function LogIn() {
+  const { setUserEmail } = useUserContext();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,7 +15,6 @@ function LogIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    navigate("/verify-otp");
 
     if (!email) {
       setError("Plese enter email");
@@ -28,8 +29,13 @@ function LogIn() {
 
     try {
       setLoading(true);
-      const response = await api.post("/user/login", { email, password });
-      console.log(response.data.message);
+      const { data } = await api.post("/user/login", { email, password });
+      console.log(data);
+
+      if (data.statusCode === 200) {
+        setUserEmail(email);
+        navigate("/verify-otp");
+      }
     } catch (error) {
       const msg =
         error?.response?.data?.message ||
