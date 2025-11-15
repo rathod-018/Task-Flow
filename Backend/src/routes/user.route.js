@@ -3,7 +3,8 @@ import {
     registerUser,
     loginUser,
     verifyOtp,
-    logOutUser
+    logOutUser,
+    getCurrentUser
 } from '../controllers/user.controller.js'
 import { verifyUser } from '../middleware/userAuth.middleware.js'
 
@@ -21,5 +22,9 @@ router.use(verifyUser)
 router.route("/logout").patch(logOutUser)
 
 
+//protected route
+router.use(verifyUser)
+
+router.route("/get-user").get(getCurrentUser)
 
 export default router
