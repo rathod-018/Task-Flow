@@ -17,9 +17,10 @@ import { sendOtp } from "../utils/sendOtp.js"
 
 
 const registerUser = asyncHandler(async (req, res) => {
-    const { name, email, password } = req.body
+    console.log(req.headers)
+    const { name, email, password, username } = req.body
 
-    if ([name, email, password].some((item) => !item || item?.trim() === "")) {
+    if ([name, email, password, username].some((item) => !item || item?.trim() === "")) {
         throw new ApiError(400, "All fields are reqired")
     }
     const tempUserExist = await TempUser.findOne({ email })
@@ -27,10 +28,10 @@ const registerUser = asyncHandler(async (req, res) => {
         await TempUser.findByIdAndDelete(tempUserExist?._id)
     }
 
-    const userExist = await User.findOne({ email })
+    const userExist = await User.findOne({ $or: [{ email }, { username }] })
 
     if (userExist) {
-        throw new ApiError(400, "User with same email alredy exist")
+        throw new ApiError(400, "User with same username or email alredy exist")
     }
 
     const firstLetter = name.charAt(0).toUpperCase()
@@ -43,6 +44,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     const createdTempUser = await TempUser.create({
         name,
+        username,
         email,
         password: hashPass,
         avatar: {
@@ -138,6 +140,7 @@ const verifyOtp = asyncHandler(async (req, res) => {
 
         user = await User.create({
             name: tempUser.name,
+            username: tempUser.username,
             email: tempUser.email,
             password: tempUser.password,
             avatar: {
@@ -150,6 +153,9 @@ const verifyOtp = asyncHandler(async (req, res) => {
 
     const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id)
 
+
+    const createdUser = await User.findById(user._id).select("-password -refreshToken")
+
     const options = {
         httpOnly: true,
         secure: true
@@ -159,7 +165,7 @@ const verifyOtp = asyncHandler(async (req, res) => {
         .cookie("accessToken", accessToken, options)
         .cookie("refreshToken", refreshToken, options)
         .json(
-            new ApiResponse(200, user, "User registerd successfully")
+            new ApiResponse(200, createdUser, "User registerd successfully")
         )
 
 
@@ -187,9 +193,24 @@ const logOutUser = asyncHandler(async (req, res) => {
 
 })
 
+// protected controller
+const getCurrentUser = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user?._id).select("-password -refreshToken")
+
+    if (!user) {
+        throw new ApiError(401, "User not found")
+    }
+
+    res.status(200).json(
+        new ApiResponse(200, user, "User fetched successfully")
+    )
+})
+
+
 export {
     registerUser,
     loginUser,
     verifyOtp,
-    logOutUser
+    logOutUser,
+    getCurrentUser
 }

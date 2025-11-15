@@ -4,6 +4,7 @@ import { User } from "../models/user.model.js"
 
 const verifyUser = async (req, _, next) => {
     try {
+        console.log("Enterd middleware")
         const token = req.cookies?.accessToken
 
         if (!token) {
@@ -15,7 +16,7 @@ const verifyUser = async (req, _, next) => {
         const user = await User.findById(playLoad._id).select("-refreshToken -password")
 
         if (!user) {
-            throw new ApiError(400, "Invalid accessToken")
+            throw new ApiError(401, "Invalid accessToken")
         }
 
         req.user = user
