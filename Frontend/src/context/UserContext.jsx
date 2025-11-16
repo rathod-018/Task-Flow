@@ -14,14 +14,16 @@ export function UserContextProvider({ children }) {
     try {
       const { data } = await api.get("/user/get-user");
       if (data.success) {
-        // console.log(!user);
-        setUser(data);
+        // console.log(data);
+        setUser(data.data);
+      } else {
+        setUser(null);
       }
-      // console.log("context:", data);
+      console.log("context:", data);
     } catch (error) {
-      setLoading(false);
-      console.log(error);
+      // console.log(error);
     } finally {
+      console.log("running....");
       setLoading(false);
     }
   };
