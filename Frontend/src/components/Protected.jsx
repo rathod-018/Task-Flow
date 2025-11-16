@@ -12,7 +12,7 @@ function Protected({ children }) {
     }
   }, [loading, user]);
 
-  if (loading) return <div>Loading...</div>; // or a spinner
+  if (loading) return <div>Loading...</div>;
 
   return <>{children}</>;
 }
