@@ -158,12 +158,15 @@ const verifyOtp = asyncHandler(async (req, res) => {
 
     const options = {
         httpOnly: true,
-        secure: true
-    }
+        secure: false,
+        sameSite: "lax",
+    };
+
+
 
     res.status(200)
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", refreshToken, options)
+        .cookie("accessToken", accessToken, { ...options, maxAge: 24 * 60 * 60 * 1000 })
+        .cookie("refreshToken", refreshToken, { ...options, maxAge: 7 * 24 * 60 * 60 * 1000 })
         .json(
             new ApiResponse(200, createdUser, "User registerd successfully")
         )
@@ -180,9 +183,10 @@ const logOutUser = asyncHandler(async (req, res) => {
     })
 
     const options = {
-        secure: true,
-        httpOnly: true
-    }
+        secure: false,
+        sameSite: "lax",
+    };
+
 
     res.status(200)
         .clearCookie("accessToken", options)
