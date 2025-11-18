@@ -35,7 +35,7 @@ const VerifyOtp = () => {
 
       if (data.statusCode === 200) {
         setUser(data.data);
-        navigate("/home");
+        navigate("/dashboard");
       }
     } catch (error) {
       const msg =
