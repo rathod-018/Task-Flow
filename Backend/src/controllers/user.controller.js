@@ -17,7 +17,6 @@ import { sendOtp } from "../utils/sendOtp.js"
 
 
 const registerUser = asyncHandler(async (req, res) => {
-    console.log(req.headers)
     const { name, email, password, username } = req.body
 
     if ([name, email, password, username].some((item) => !item || item?.trim() === "")) {

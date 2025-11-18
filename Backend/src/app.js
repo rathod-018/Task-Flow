@@ -22,9 +22,11 @@ app.use(cors({
 
 // import routes
 import userRoutes from "./routes/user.route.js"
+import boardRoutes from "./routes/board.route.js"
 
 
 app.use("/api/v1/user", userRoutes)
+app.use("/api/v1/board", boardRoutes)
 
 
 
