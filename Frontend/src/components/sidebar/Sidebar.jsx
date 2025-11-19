@@ -4,7 +4,7 @@ import { useBoardContext } from "../../context/BoardContext";
 function Sidebar() {
   const { createdBoard } = useBoardContext();
   return (
-    <aside className="w-56 h-full bg-slate-800 text-white p-4 ">
+    <aside className="w-56 h-full fixed left-0 bg-slate-800 text-white p-4 ">
       <div className="flex flex-col gap-3">
         {createdBoard.length > 0 ? (
           <>

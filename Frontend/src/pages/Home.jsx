@@ -1,16 +1,20 @@
 import React from "react";
 import Navbar from "../components/navbar/Navbar";
 import Sidebar from "../components/sidebar/Sidebar";
-import { Outlet } from "react-router-dom";
+import Main from "../components/Main";
 
 const Home = () => {
   return (
-    <div className="h-screen w-screen">
-      <Navbar />
+    <div className="h-full w-full">
+      <div className="fixed z-10 top-0 h-14 w-full">
+        <Navbar />
+      </div>
       <div className="pt-14 flex h-full">
-        <Sidebar />
-        <div className="flex-1 border-2 border-red-400">
-          <Outlet />
+        <div className="fixed top-14 left-0 w-56 h-[calc(100vh-3.5rem)]">
+          <Sidebar />
+        </div>
+        <div className="flex pl-56 h-[calc(100vh-3.5rem)] w-full overflow-auto ">
+          <Main />
         </div>
       </div>
     </div>
