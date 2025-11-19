@@ -11,9 +11,9 @@ const listSchema = new Schema(
             type: Number,
             default: 0
         },
-        boardId: {
+        ProjectId: {
             type: mongoose.Types.ObjectId,
-            ref: "Board",
+            ref: "Project",
             required: true
         }
     },
