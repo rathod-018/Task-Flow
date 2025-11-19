@@ -15,7 +15,7 @@ function Navbar() {
   const navigate = useNavigate();
 
   return (
-    <header className="h-14 w-full bg-slate-700 fixed z-10 text-white flex items-center px-4 justify-between shadow">
+    <header className="h-full w-full bg-slate-700  text-white flex items-center px-4 justify-between shadow">
       <div className="flex items-center gap-4">
         <img src={menuBurger} alt="" className="w-5" />
         <h2>Task Flow</h2>
@@ -60,42 +60,3 @@ function Navbar() {
 }
 
 export default Navbar;
-
-// <ul className="flex justify-center gap-10 items-center font-medium ">
-//   <li>
-//     <NavLink
-//       to=""
-//       className={({ isActive }) => `hover:text-orange-700
-//       ${isActive ? "text-orange-700" : "text-white"}`}
-//     >
-//       Work-Flow
-//     </NavLink>
-//   </li>
-//   <li>
-//     <NavLink
-//       to="list"
-//       className={({ isActive }) => `hover:text-orange-700
-//       ${isActive ? "text-orange-700" : "text-white"}`}
-//     >
-//       List
-//     </NavLink>
-//   </li>
-//   <li>
-//     <NavLink
-//       to="summary"
-//       className={({ isActive }) => `hover:text-orange-700
-//       ${isActive ? "text-orange-700" : "text-white"}`}
-//     >
-//       Summary
-//     </NavLink>
-//   </li>
-//   <li>
-//     <NavLink
-//       to="boards"
-//       className={({ isActive }) => `hover:text-orange-700
-//       ${isActive ? "text-orange-700" : "text-white"}`}
-//     >
-//       Boards
-//     </NavLink>
-//   </li>
-// </ul>;
