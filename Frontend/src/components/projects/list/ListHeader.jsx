@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
-function ListHeader() {
-  return (
-    <div>ListHeader</div>
-  )
+function ListCard() {
+  return <div>ListHeader</div>;
 }
 
-export default ListHeader
+export default ListCard;

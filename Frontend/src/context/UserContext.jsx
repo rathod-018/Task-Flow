@@ -18,11 +18,11 @@ export function UserContextProvider({ children }) {
       } else {
         setUser(null);
       }
-      console.log("context:", data);
+      // console.log("context:", data);
     } catch (error) {
       // console.log(error);
     } finally {
-      console.log("running....");
+      // console.log("running....");
       setLoading(false);
     }
   };
@@ -30,6 +30,8 @@ export function UserContextProvider({ children }) {
   useEffect(() => {
     getUser();
   }, []);
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <UserContext.Provider

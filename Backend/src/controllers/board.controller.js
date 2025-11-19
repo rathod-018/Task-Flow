@@ -91,7 +91,14 @@ export const getBoardById = asyncHandler(async (req, res) => {
 })
 
 
-export const getAllBoard = asyncHandler(async (req, res) => {
+export const getCreatedBoards = asyncHandler(async (req, res) => {
+    const boards = await Board.find({ ownerId: req.user?._id }).sort({ createdAt: -1 })
 
-})
+
+
+    res.status(200).json(
+        new ApiResponse(200, boards, "Created boards fetched successfully")
+    );
+});
+
 
