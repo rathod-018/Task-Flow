@@ -9,6 +9,7 @@ import WorkFlowCard from "./components/projects/workFlow/WorkFlowCard";
 import ListCard from "./components/projects/list/ListHeader";
 import BoardCard from "./components/projects/board/BoardCard";
 import SummaryStatus from "./components/projects/summary/SummaryStats";
+import { ProjectContextProvider } from "./context/ProjectContext";
 
 function App() {
   return (
@@ -19,8 +20,15 @@ function App() {
       <Route path="/verify-otp" element={<VerifyOtp />} />
 
       <Route element={<Protected />}>
-        <Route path="/home" element={<Home />}>
-          <Route path="" element={<WorkFlowCard />} />
+        <Route
+          path="/home"
+          element={
+            <ProjectContextProvider>
+              <Home />
+            </ProjectContextProvider>
+          }
+        >
+          <Route path="work-flow" index element={<WorkFlowCard />} />
           <Route path="list" element={<ListCard />} />
           <Route path="summary" element={<BoardCard />} />
           <Route path="boards" element={<SummaryStatus />} />
