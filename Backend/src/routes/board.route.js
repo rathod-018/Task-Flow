@@ -8,7 +8,7 @@ router.use(verifyUser)
 
 router.route("/create").post(createBoard)
 
-router.route("/created-boards").get(getCreatedBoards)
+router.route("/created").get(getCreatedBoards)
 
 
 

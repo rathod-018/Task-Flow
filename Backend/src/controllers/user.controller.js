@@ -12,6 +12,7 @@ import {
 } from "../utils/cludinary.js"
 import { otpGenerator } from "../utils/otpGenerator.js"
 import { sendOtp } from "../utils/sendOtp.js"
+import { isValidObjectId } from "mongoose"
 
 
 
@@ -210,10 +211,41 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 })
 
 
+//update user page history
+
+const updatePageHistory = asyncHandler(async (req, res) => {
+    const { boardId, projectId } = req.body
+
+    if (boardId && !isValidObjectId(boardId)) throw new ApiError(400, "Invalid BoardId");
+
+    if (projectId && !isValidObjectId(projectId)) throw new ApiError(400, "Invalid ProjectId")
+
+
+    const user = await User.findByIdAndUpdate(req.user?._id,
+        {
+            userPageHistory: {
+                boardId: boardId || null,
+                projectId: projectId || null
+            }
+        }, {
+        new: true
+    })
+
+    if (!user) {
+        throw new ApiError(400, "Invalid user Id")
+    }
+
+    res.status(200).json(
+        new ApiResponse(200, user, "User page history updated successfully")
+    )
+})
+
+
 export {
     registerUser,
     loginUser,
     verifyOtp,
     logOutUser,
-    getCurrentUser
+    getCurrentUser,
+    updatePageHistory
 }

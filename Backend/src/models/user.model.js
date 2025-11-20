@@ -34,12 +34,22 @@ const userShema = new Schema(
         },
         refreshToken: {
             type: String
+        },
+        userPageHistory: {
+            boardId: {
+                type: mongoose.Types.ObjectId,
+                ref: "Board",
+                default: null
+            },
+            projectId: {
+                type: mongoose.Types.ObjectId,
+                ref: "Project",
+                default: null
+            }
         }
     },
     {
         timestamps: true
     })
-
-
 
 export const User = mongoose.model("User", userShema)
