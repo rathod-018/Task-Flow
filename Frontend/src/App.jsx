@@ -7,7 +7,6 @@ import VerifyOtp from "./pages/auth/VerifyOtp";
 import Protected from "./components/Protected";
 import WorkFlowCard from "./components/projects/workFlow/WorkFlowCard";
 import ListCard from "./components/projects/list/ListHeader";
-import BoardCard from "./components/projects/board/BoardCard";
 import SummaryStatus from "./components/projects/summary/SummaryStats";
 import { ProjectContextProvider } from "./context/ProjectContext";
 
@@ -30,8 +29,7 @@ function App() {
         >
           <Route path="work-flow" index element={<WorkFlowCard />} />
           <Route path="list" element={<ListCard />} />
-          <Route path="summary" element={<BoardCard />} />
-          <Route path="boards" element={<SummaryStatus />} />
+          <Route path="summary" element={<SummaryStatus />} />
         </Route>
       </Route>
     </Routes>

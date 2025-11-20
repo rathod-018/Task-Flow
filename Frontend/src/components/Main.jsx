@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { Outlet, NavLink } from "react-router-dom";
+import BoardCard from "./projects/board/BoardCard";
 function Main() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <div className="flex flex-col w-full h-full  max-w-[110rem] mx-auto">
-      <div className=" px-4 py-5 flex flex-col gap-5">
+    <div className="flex flex-col w-full h-full  max-w-[110rem] mx-auto ">
+      <div className=" px-4 py-5 flex flex-col gap-5 ">
         <h2 className="px-6 py-3 w-fit bg-amber-700 rounded-xl text-2xl font-bold">
           Project name
         </h2>
-        <div className="w-full">
-          <ul className="flex gap-10 ml-[15%] items-center font-medium bg-slate-400 rounded-xl px-6 py-1 w-fit">
+        <div className="flex justify-center">
+          <ul className="flex gap-10  items-center font-medium bg-slate-400 rounded-xl px-6 py-1 w-fit relative">
             <li>
               <NavLink
                 to="work-flow"
@@ -45,18 +48,21 @@ function Main() {
                 Summary
               </NavLink>
             </li>
-            <li>
-              <NavLink
-                to="boards"
-                className={({ isActive }) =>
-                  `hover:text-orange-700 text-lg font-medium px-2 ${
-                    isActive ? "text-orange-700" : "text-slate-800"
-                  }`
-                }
-              >
-                All-Boards
-              </NavLink>
+            <li
+              className={`${
+                isOpen ? "text-orange-700" : "text-slate-800"
+              } hover:text-orange-700 cursor-pointer`}
+              onClick={() => {
+                setIsOpen((prev) => !prev);
+              }}
+            >
+              All-Boards
             </li>
+            {isOpen ? (
+              <div className="absolute top-16 left-0 w-full z-5 ">
+                <BoardCard />
+              </div>
+            ) : null}
           </ul>
         </div>
       </div>
