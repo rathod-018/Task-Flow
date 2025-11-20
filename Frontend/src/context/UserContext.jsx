@@ -35,7 +35,7 @@ export function UserContextProvider({ children }) {
 
   return (
     <UserContext.Provider
-      value={{ user, setUser, loading, userEmail, setUserEmail }}
+      value={{ user, setUser, loading, userEmail, setUserEmail, getUser }}
     >
       {children}
     </UserContext.Provider>

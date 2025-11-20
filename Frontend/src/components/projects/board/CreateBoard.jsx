@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import api from "../../../api/axios";
+import { usePageHistory } from "../../../hooks/usePageHisrory";
 
 const CreateBoard = ({ close }) => {
+  // To update boardId in user model
+  const { updateLastOpened } = usePageHistory();
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [title, setTitle] = useState("");
@@ -21,6 +25,12 @@ const CreateBoard = ({ close }) => {
       setLoading(true);
       const { data } = await api.post("/board/create", { title, description });
       console.log(data);
+
+      //update last opened board
+      const boardId = data.data._id;
+      console.log(boardId);
+      updateLastOpened(boardId);
+
       // to clode create component
       close();
     } catch (error) {
@@ -48,6 +58,7 @@ const CreateBoard = ({ close }) => {
             onChange={(e) => {
               setTitle(e.target.value);
             }}
+            disabled={loading}
           />
         </div>
         <div>
@@ -59,12 +70,14 @@ const CreateBoard = ({ close }) => {
             value={description}
             className="w-full h-32 p-3 rounded-lg border text-black border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
             placeholder="Write description..."
+            disabled={loading}
           />
         </div>
 
         <button
           className="w-full border-2 border-red-400 py-2 rounded-lg"
           onClick={create}
+          disabled={loading}
         >
           Create
         </button>
