@@ -1,9 +1,9 @@
+// src/components/projects/board/CreateBoard.jsx
 import { useEffect, useState } from "react";
 import api from "../../../api/axios";
 import { usePageHistory } from "../../../hooks/usePageHisrory";
 
 const CreateBoard = ({ close }) => {
-  // To update boardId in user model
   const { updateLastOpened } = usePageHistory();
 
   const [loading, setLoading] = useState(false);
@@ -16,28 +16,24 @@ const CreateBoard = ({ close }) => {
       setError("Board name is required");
       return;
     }
-
     if (!description) {
       setError("description is required");
+      return;
     }
-    // console.log(data);
+
     try {
       setLoading(true);
       const { data } = await api.post("/board/create", { title, description });
-      console.log(data);
 
-      //update last opened board
+      // update last opened board (your logic)
       const boardId = data.data._id;
-      console.log(boardId);
       updateLastOpened(boardId);
 
-      // to clode create component
-      close();
+      // close dropdown panel
+      if (typeof close === "function") close();
     } catch (error) {
       const msg =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Something went wrong";
+        error?.response?.data?.message || error?.message || "Something went wrong";
       setError(msg);
     } finally {
       setLoading(false);
@@ -45,44 +41,38 @@ const CreateBoard = ({ close }) => {
   };
 
   return (
-    <div className="h-full bg-slate-700 rounded-xl p-4 flex flex-col gap-4 mt-2">
-      <div className="flex flex-col gap-4 mt-8">
-        <div>
-          <label htmlFor="name">Board name:</label>
-          <input
-            className="w-full p-2 rounded-lg border text-black border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-            type="text"
-            name="name"
-            placeholder="Board name"
-            value={title}
-            onChange={(e) => {
-              setTitle(e.target.value);
-            }}
-            disabled={loading}
-          />
-        </div>
-        <div>
-          <label className="text-sm font-medium"> Description</label>
-          <textarea
-            onChange={(e) => {
-              setDescription(e.target.value);
-            }}
-            value={description}
-            className="w-full h-32 p-3 rounded-lg border text-black border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-            placeholder="Write description..."
-            disabled={loading}
-          />
-        </div>
+    <div className="h-auto w-full p-4 bg-[#151618] z-40">
+      <div className="flex flex-col gap-3">
+        <label className="text-sm text-gray-300">Board title</label>
+        <input
+          className="w-full p-2 rounded-md bg-[#0f1113] border border-[#26282b] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 outline-none"
+          type="text"
+          placeholder="Board title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          disabled={loading}
+        />
+
+        <label className="text-sm text-gray-300 mt-2">Description</label>
+        <textarea
+          onChange={(e) => setDescription(e.target.value)}
+          value={description}
+          className="w-full p-2 rounded-md bg-[#0f1113] border border-[#26282b] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 outline-none"
+          placeholder="Write description..."
+          rows={4}
+          disabled={loading}
+        />
 
         <button
-          className="w-full border-2 border-red-400 py-2 rounded-lg"
+          className="mt-3 w-full px-3 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white"
           onClick={create}
           disabled={loading}
         >
-          Create
+          {loading ? "Creating..." : "Create"}
         </button>
+
+        {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
       </div>
-      {error ? <div className="text-center text-red-500">{error}</div> : null}
     </div>
   );
 };

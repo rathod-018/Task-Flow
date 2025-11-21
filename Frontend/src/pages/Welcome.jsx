@@ -2,36 +2,45 @@ import React from "react";
 
 function Welcome() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-black via-gray-900 to-indigo-900 px-4">
-      {/* Logo */}
-      <h1 className="text-4xl font-bold text-gray-900">TaskFlow</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-neutral-900 via-slate-900 to-indigo-950 px-4">
+      <div className="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+        <div className="text-center md:text-left px-6">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-white">
+            TaskFlow
+          </h1>
+          <p className="mt-4 text-gray-300 text-lg max-w-xl">
+            Organize your work, collaborate with your team, and ship faster. A
+            simple, powerful workspace for planning and tracking your projects.
+          </p>
 
-      {/* Main Heading */}
-      <h2 className="text-2xl font-semibold text-gray-800 mt-4 text-center">
-        Organize your work. Achieve your goals.
-      </h2>
+          <div className="mt-8 flex justify-center md:justify-start gap-4">
+            <a
+              href="/signup"
+              className="inline-block px-6 py-3 rounded-lg bg-blue-600 text-white font-medium shadow hover:bg-blue-700 transition"
+            >
+              Get Started
+            </a>
 
-      {/* Subtext */}
-      <p className="text-gray-600 mt-2 text-center max-w-md">
-        A simple and powerful workspace to manage tasks, track progress, and
-        stay productive every day.
-      </p>
-
-      {/* Buttons */}
-      <div className="flex flex-col sm:flex-row gap-4 mt-8">
-        <a
-          href="/signup"
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition"
-        >
-          Get Started
-        </a>
-
-        <a
-          href="/login"
-          className="px-6 py-3 bg-white text-gray-800 rounded-lg font-medium shadow hover:shadow-md transition"
-        >
-          Sign In
-        </a>
+            <a
+              href="/login"
+              className="inline-block px-6 py-3 rounded-lg bg-white/5 text-white border border-white/10 hover:bg-white/10 transition"
+            >
+              Sign In
+            </a>
+          </div>
+        </div>
+        <div className="flex items-center justify-center px-6">
+          <div className="w-full max-w-md bg-gradient-to-b from-white/3 to-white/2 border border-white/6 rounded-2xl p-6 shadow-lg">
+            <h3 className="text-lg font-semibold text-white mb-2">
+              Quick tour
+            </h3>
+            <ul className="text-gray-300 space-y-3">
+              <li>{"->"} Create boards, project and task.</li>
+              <li>{"->"} Track progress with simple workflows.</li>
+              <li>{"->"} Keep everything in one place.</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );

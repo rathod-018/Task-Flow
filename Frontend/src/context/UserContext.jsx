@@ -20,7 +20,7 @@ export function UserContextProvider({ children }) {
       }
       // console.log("context:", data);
     } catch (error) {
-      // console.log(error);
+      console.log(error);
     } finally {
       // console.log("running....");
       setLoading(false);

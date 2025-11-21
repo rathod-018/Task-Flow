@@ -1,4 +1,4 @@
-import React, { useId, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../api/axios";
 import { useUserContext } from "../../context/UserContext";
@@ -15,7 +15,7 @@ function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(email, name, pass);
+    // original logic preserved
     setError("");
     if (!name) {
       setError("Please enter name");
@@ -26,14 +26,16 @@ function SignUp() {
       return;
     }
     if (!password) {
-      setError("Plese enter password");
+      setError("Please enter password");
       return;
     }
     if (!username) {
-      setError("plese enter username");
+      setError("Please enter username");
+      return;
     }
 
     try {
+      setLoading(true);
       const response = await api.post("user/register", {
         name,
         username,
@@ -50,87 +52,97 @@ function SignUp() {
         error?.message ||
         "Something went wrong";
       setError(msg);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex  justify-center items-center min-h-screen  px-4">
-      <div className="flex flex-col bg-white/10 backdrop-blur-md shadow-lg p-10 gap-12 max-w-4xl">
-        <div>
-          <h2>Task Flow</h2>
-          <p>Sign In</p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-neutral-900 to-slate-900 px-4">
+      <div className="w-full max-w-lg bg-[#0f1720] border border-[#20232a] rounded-2xl p-8 shadow-lg">
+        <div className="mb-6 text-center">
+          <h2 className="text-2xl font-semibold text-white">
+            Create your account
+          </h2>
+          <p className="text-sm text-gray-400 mt-1">
+            Join TaskFlow — quick setup, start organizing.
+          </p>
         </div>
-        <div>
-          <form
-            noValidate
-            onSubmit={(e) => {
-              handleSubmit(e);
-            }}
-            className="flex flex-col gap-5"
+
+        <form
+          onSubmit={handleSubmit}
+          noValidate
+          className="grid grid-cols-1 gap-4"
+        >
+          <div>
+            <label className="text-sm text-gray-300 mb-1 block">
+              Full name
+            </label>
+            <input
+              className="w-full p-3 rounded-lg bg-[#0b1220] border border-[#262b33] text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 outline-none"
+              type="text"
+              id="name"
+              placeholder="Full name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="text-sm text-gray-300 mb-1 block">Username</label>
+            <input
+              className="w-full p-3 rounded-lg bg-[#0b1220] border border-[#262b33] text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 outline-none"
+              type="text"
+              id="username"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="text-sm text-gray-300 mb-1 block">Email</label>
+            <input
+              className="w-full p-3 rounded-lg bg-[#0b1220] border border-[#262b33] text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 outline-none"
+              type="email"
+              id="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value.toLowerCase().trim())}
+            />
+          </div>
+
+          <div>
+            <label className="text-sm text-gray-300 mb-1 block">Password</label>
+            <input
+              className="w-full p-3 rounded-lg bg-[#0b1220] border border-[#262b33] text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 outline-none"
+              type="password"
+              id="pass"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+
+          <button
+            className="w-full mt-2 py-3 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition disabled:opacity-60"
+            type="submit"
+            disabled={loading}
           >
-            <div>
-              <label htmlFor="name">Full name</label>
-              <input
-                className="text-black"
-                type="text"
-                id="name"
-                placeholder="Full name"
-                value={name}
-                onChange={(e) => {
-                  setName(e.target.value);
-                }}
-              />
-            </div>
-            <div>
-              <label htmlFor="username">Full name</label>
-              <input
-                className="text-black"
-                type="text"
-                id="username"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => {
-                  setUsername(e.target.value);
-                }}
-              />
-            </div>
-            <div>
-              <label htmlFor="email">Email</label>
-              <input
-                className="text-black"
-                type="email"
-                id="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value.toLowerCase().trim());
-                }}
-              />
-            </div>
-            <div>
-              <label htmlFor="pass">Password</label>
-              <input
-                className="text-black"
-                type="password"
-                id="pass"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
-              />
-            </div>
-            <div className="p-1">
-              <button className="border-none  bg-slate-500" type="submit">
-                Sign Up
-              </button>
-            </div>
-            {error ? <div className="text-red-500">{error}</div> : null}
-            <p>
-              Alredy have an account? <Link to="/login">Log In</Link>
-            </p>
-          </form>
-        </div>
+            {loading ? "Creating..." : "Sign Up"}
+          </button>
+
+          {error ? (
+            <div className="text-red-500 text-sm mt-2">{error}</div>
+          ) : null}
+
+          <p className="text-sm text-gray-400 mt-3 text-center">
+            Already have an account?{" "}
+            <Link to="/login" className="text-blue-400 hover:underline">
+              Log In
+            </Link>
+          </p>
+        </form>
       </div>
     </div>
   );
