@@ -86,7 +86,7 @@ export const getProjectById = asyncHandler(async (req, res) => {
     }
 
     res.status(200).json(
-        new ApiResponse(400, project, "Project fetched successfully")
+        new ApiResponse(200, project, "Project fetched successfully")
     )
 })
 

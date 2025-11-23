@@ -14,7 +14,7 @@ export const useFetchBoard = (url) => {
         const fetchData = async () => {
             try {
                 const { data } = await api.get(url)
-                console.log(data)
+                // console.log(data)
                 setData(data?.data)
 
             } catch (error) {

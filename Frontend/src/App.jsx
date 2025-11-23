@@ -5,7 +5,7 @@ import LogIn from "./pages/auth/LogIn";
 import SignUp from "./pages/auth/Signup";
 import VerifyOtp from "./pages/auth/VerifyOtp";
 import Protected from "./components/Protected";
-import WorkFlowCard from "./components/projects/workFlow/WorkFlowCard";
+import WorkFlowColumn from "./components/projects/workFlow/WorkFlowColumn";
 import ListCard from "./components/projects/list/ListHeader";
 import SummaryStatus from "./components/projects/summary/SummaryStats";
 import { ProjectContextProvider } from "./context/ProjectContext";
@@ -27,7 +27,7 @@ function App() {
             </ProjectContextProvider>
           }
         >
-          <Route path="work-flow" index element={<WorkFlowCard />} />
+          <Route path="work-flow" index element={<WorkFlowColumn />} />
           <Route path="list" element={<ListCard />} />
           <Route path="summary" element={<SummaryStatus />} />
         </Route>

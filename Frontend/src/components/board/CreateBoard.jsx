@@ -1,7 +1,6 @@
-// src/components/projects/board/CreateBoard.jsx
 import { useEffect, useState } from "react";
-import api from "../../../api/axios";
-import { usePageHistory } from "../../../hooks/usePageHisrory";
+import api from "../../api/axios";
+import { usePageHistory } from "../../hooks/usePageHisrory";
 
 const CreateBoard = ({ close }) => {
   const { updateLastOpened } = usePageHistory();
@@ -24,12 +23,8 @@ const CreateBoard = ({ close }) => {
     try {
       setLoading(true);
       const { data } = await api.post("/board/create", { title, description });
-
-      // update last opened board (your logic)
       const boardId = data.data._id;
       updateLastOpened(boardId);
-
-      // close dropdown panel
       if (typeof close === "function") close();
     } catch (error) {
       const msg =

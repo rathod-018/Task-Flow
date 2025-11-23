@@ -1,4 +1,3 @@
-// src/components/projects/board/BoardCard.jsx
 import React, { useEffect, useState } from "react";
 import { useFetchBoard } from "../../../hooks/useFetchBoard";
 import { usePageHistory } from "../../../hooks/usePageHisrory";

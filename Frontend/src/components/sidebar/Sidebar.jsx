@@ -1,24 +1,27 @@
-// src/components/sidebar/Sidebar.jsx
 import React, { useEffect, useState } from "react";
 import { useUserContext } from "../../context/UserContext";
 import CreateProject from "../projects/CreateProject";
 import api from "../../api/axios";
-
 import create from "../../assets/create.svg";
 import boardIcon from "../../assets/board.svg";
 import angleDown from "../../assets/angle-down.svg";
 import angleRight from "../../assets/angle-right.svg";
+import { useProjectContext } from "../../context/ProjectContext";
+import { usePageHistory } from "../../hooks/usePageHisrory";
 
 function Sidebar({ openProject }) {
   const { user } = useUserContext();
   const [board, setBoard] = useState(null);
+  const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [projectOpen, setProjectOpen] = useState(true);
   const [isCreatePageOpen, setCreatePageOpen] = useState(false);
+  const { updateLastOpened } = usePageHistory();
+
+  const { projectList } = useProjectContext();
+  const boardId = user?.userPageHistory?.boardId;
 
   useEffect(() => {
-    const boardId = user?.userPageHistory?.boardId;
-
     const fetchCurrentBoard = async () => {
       try {
         const { data } = await api.get(`board/${boardId}`);
@@ -33,9 +36,16 @@ function Sidebar({ openProject }) {
     fetchCurrentBoard();
   }, [user]);
 
+  useEffect(() => {
+    setProjects(projectList);
+  }, [projectList]);
+
+  const updateProjectId = (projectId) => {
+    updateLastOpened(boardId, projectId);
+  };
+
   return (
     <div className="w-full h-full">
-      {/* Sidebar */}
       <aside className="w-56 h-full fixed left-0 top-0 mt-14 bg-[#0d1117] text-gray-200 p-4 border-r border-[#30363d]">
         {loading && (
           <div className="text-gray-400 text-sm animate-pulse">Loading...</div>
@@ -81,30 +91,31 @@ function Sidebar({ openProject }) {
             </div>
           </div>
         )}
-
-        {/* Projects list */}
         {projectOpen && (
           <div className="mt-4 pl-3">
             <p className="text-xs text-gray-500 mb-2 uppercase tracking-wide">
               Projects
             </p>
-
-            <ul className="space-y-1 text-sm">
-              <li className="py-1 px-2 rounded-md hover:bg-[#161b22] cursor-pointer">
-                Board 1
-              </li>
-              <li className="py-1 px-2 rounded-md hover:bg-[#161b22] cursor-pointer">
-                Board 2
-              </li>
-              <li className="py-1 px-2 rounded-md hover:bg-[#161b22] cursor-pointer">
-                Board 3
-              </li>
-            </ul>
+            {projects?.length > 0 ? (
+              <ul className="space-y-1 text-sm">
+                {projects.map((item) => (
+                  <li
+                    key={item._id}
+                    onClick={() => {
+                      updateProjectId(item._id);
+                    }}
+                    className="py-1 px-2 rounded-md hover:bg-[#161b22] cursor-pointer"
+                  >
+                    {item.title}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No projects !</p>
+            )}
           </div>
         )}
       </aside>
-
-      {/* Local create project fallback (only shown if opened from here) */}
       {isCreatePageOpen && (
         <CreateProject close={() => setCreatePageOpen(false)} />
       )}
