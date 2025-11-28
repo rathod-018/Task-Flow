@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useUserContext } from "../../context/UserContext";
 import Card from "./Card";
 import api from "../../api/axios";
+import { useMembersByStatus } from "../../hooks/useFetchMembershipBoard";
 
 function AddMember() {
   const { user } = useUserContext();
   const [text, setText] = useState("");
   const [results, setResult] = useState([]);
+
+  const members = useMembersByStatus("pending");
 
   const searchUser = async () => {
     if (!text || !text.trim()) return setResult([]);
@@ -45,7 +48,7 @@ function AddMember() {
         {results
           ?.filter((result) => result._id !== user?._id)
           .map((result) => (
-            <Card result={result} key={result?._id} />
+            <Card result={result} members={members} key={result?._id} />
           ))}
       </div>
     </div>

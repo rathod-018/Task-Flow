@@ -1,7 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import api from "../../api/axios";
+import { useUserContext } from "../../context/UserContext";
 
-function Card({result}) {
+function Card({ result, members }) {
+  console.log(members)
+  const { user } = useUserContext();
   const [invited, setInvited] = useState(false);
+
+  useEffect(() => {
+    const alredyInvited = members.some((ele) => ele?.userId?._id === result?._id);
+    if (alredyInvited) {
+      setInvited(true);
+    }
+  }, [result?._id, members]);
+
+  const handleInvite = async () => {
+    try {
+      const { data } = await api.post("/board-member/invite", {
+        boardId: user?.userPageHistory?.boardId,
+        userId: result?._id,
+      });
+
+      if (data?.statusCode === 201) {
+        setInvited(true);
+      }
+
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div
       className=" relative flex items-center gap-4 p-4 m-3 rounded-lg 
@@ -24,7 +53,7 @@ function Card({result}) {
         <p className="text-gray-400 text-sm">{result.email}</p>
       </div>
       <button
-        onClick={() => setInvited(true)}
+        onClick={handleInvite}
         className={`absolute right-4 top-1/2 -translate-y-1/2 
           px-4 py-1.5 rounded-3xl text-base font-medium transition-all border border-[#454545]
                     ${
