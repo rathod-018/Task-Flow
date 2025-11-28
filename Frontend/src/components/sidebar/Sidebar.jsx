@@ -8,8 +8,10 @@ import angleDown from "../../assets/angle-down.svg";
 import angleRight from "../../assets/angle-right.svg";
 import { useProjectContext } from "../../context/ProjectContext";
 import { usePageHistory } from "../../hooks/usePageHisrory";
+import { useUIContext } from "../../context/UIContext";
 
-function Sidebar({ openProject }) {
+function Sidebar() {
+  const { setIsCreateProjectCardOpen } = useUIContext();
   const { user } = useUserContext();
   const [board, setBoard] = useState(null);
   const [projects, setProjects] = useState([]);
@@ -64,10 +66,7 @@ function Sidebar({ openProject }) {
 
             <div className="flex gap-3 items-center">
               <button
-                onClick={() => {
-                  setCreatePageOpen(true);
-                  if (typeof openProject === "function") openProject();
-                }}
+                onClick={() => setIsCreateProjectCardOpen(true)}
                 aria-label="create project"
                 className="p-1 rounded hover:bg-[#16171a]"
               >
@@ -116,9 +115,6 @@ function Sidebar({ openProject }) {
           </div>
         )}
       </aside>
-      {isCreatePageOpen && (
-        <CreateProject close={() => setCreatePageOpen(false)} />
-      )}
     </div>
   );
 }
