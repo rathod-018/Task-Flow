@@ -7,9 +7,6 @@ import { Board } from "../models/board.model.js"
 import { User } from "../models/user.model.js"
 
 
-
-
-
 // get user by username or email and sent
 export const searchUser = asyncHandler(async (req, res) => {
     const { q } = req.query
@@ -32,7 +29,6 @@ export const searchUser = asyncHandler(async (req, res) => {
         new ApiResponse(200, users, "Users fetched")
     )
 })
-
 
 // create membership board user to user to board
 // ---> boardId invitedBy userId role
@@ -68,8 +64,6 @@ export const inviteMember = asyncHandler(async (req, res) => {
     )
 })
 
-
-
 // get invited board
 export const getInvitedBoard = asyncHandler(async (req, res) => {
     const invitedBoard = await BoardMembership.find({
@@ -89,9 +83,6 @@ export const getInvitedBoard = asyncHandler(async (req, res) => {
         new ApiResponse(200, invitedBoard, "Invited board fetched successfully")
     );
 });
-
-
-
 
 // delete user from membership board
 export const deleteMember = asyncHandler(async (req, res) => {
@@ -134,4 +125,28 @@ export const updateInvitedReq = asyncHandler(async (req, res) => {
     }
 
     res.status(200).json(200, member, "Invite ststus updated successfully")
+})
+
+export const getMemberByStatus = asyncHandler(async (req, res) => {
+    const { boardId, status } = req.query
+
+    if (!boardId || !isValidObjectId(boardId)) {
+        throw new ApiError(400, "BoardId is required")
+    }
+    if (!status || !status.trim()) {
+        throw new ApiError(400, "Status is required")
+    }
+
+    const isBoardExist = await Board.findById(boardId)
+    if (!isBoardExist) {
+        throw new ApiError(400, "Invalid Board")
+    }
+
+    const members = await BoardMembership.find({ boardId, inviteStatus: status })
+        .populate({ path: "userId", select: "name email username avatar" })
+
+    res.status(200).json(
+        new ApiResponse(200, members, "Members fetched successfully")
+    )
+
 })

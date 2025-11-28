@@ -3,6 +3,7 @@ import { verifyUser } from "../middleware/userAuth.middleware.js"
 import {
     deleteMember,
     getInvitedBoard,
+    getMemberByStatus,
     inviteMember,
     searchUser,
     updateInvitedReq
@@ -18,5 +19,6 @@ router.route("/invite").post(inviteMember)
 router.route("/invited").get(getInvitedBoard)
 router.route("/:memberId").delete(deleteMember)
 router.route("/update").patch(updateInvitedReq)
+router.route("/all").get(getMemberByStatus)
 
 export default router
