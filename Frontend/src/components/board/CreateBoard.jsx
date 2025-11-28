@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axios";
 import { usePageHistory } from "../../hooks/usePageHisrory";
+import { toast } from "react-toastify";
+import { useUIContext } from "../../context/UIContext";
 
-const CreateBoard = ({ close }) => {
+const CreateBoard = () => {
+  const { setIsCreateBoardCardOpen } = useUIContext();
   const { updateLastOpened } = usePageHistory();
 
   const [loading, setLoading] = useState(false);
@@ -10,7 +13,7 @@ const CreateBoard = ({ close }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  const create = async () => {
+  const createBoard = async () => {
     if (!title) {
       setError("Board name is required");
       return;
@@ -25,10 +28,16 @@ const CreateBoard = ({ close }) => {
       const { data } = await api.post("/board/create", { title, description });
       const boardId = data.data._id;
       updateLastOpened(boardId);
-      if (typeof close === "function") close();
+      console.log(data)
+      if (data.statusCode === 201) {
+        toast.success("Board created successfully");
+        setIsCreateBoardCardOpen(false);
+      }
     } catch (error) {
       const msg =
-        error?.response?.data?.message || error?.message || "Something went wrong";
+        error?.response?.data?.message ||
+        error?.message ||
+        "Something went wrong";
       setError(msg);
     } finally {
       setLoading(false);
@@ -36,37 +45,48 @@ const CreateBoard = ({ close }) => {
   };
 
   return (
-    <div className="h-auto w-full p-4 bg-[#151618] z-40">
-      <div className="flex flex-col gap-3">
-        <label className="text-sm text-gray-300">Board title</label>
+    <div
+      onClick={(e) => e.stopPropagation()}
+      className="w-[45rem] h-[30rem] bg-[#18181b] rounded-xl shadow-2xl p-6 space-y-5 border border-[#2a2a2d]"
+    >
+      <h2 className="text-2xl font-semibold text-gray-200">Create New Board</h2>
+      <div className="flex flex-col space-y-1">
+        <label className="text-sm font-medium text-gray-300">Title</label>
         <input
-          className="w-full p-2 rounded-md bg-[#0f1113] border border-[#26282b] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 outline-none"
           type="text"
-          placeholder="Board title"
-          value={title}
+          placeholder="Enter board title"
+          className="bg-[#232327] text-gray-200 border border-[#3a3a3e] rounded-lg px-3 py-2 
+                 outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
           onChange={(e) => setTitle(e.target.value)}
           disabled={loading}
         />
-
-        <label className="text-sm text-gray-300 mt-2">Description</label>
+      </div>
+      <div className="flex flex-col space-y-1">
+        <label className="text-sm font-medium text-gray-300">Description</label>
         <textarea
+          rows="4"
+          placeholder="Enter board description"
+          className="bg-[#232327] text-gray-200 border border-[#3a3a3e] rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
           onChange={(e) => setDescription(e.target.value)}
-          value={description}
-          className="w-full p-2 rounded-md bg-[#0f1113] border border-[#26282b] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 outline-none"
-          placeholder="Write description..."
-          rows={4}
           disabled={loading}
         />
-
+      </div>
+      <div className="flex justify-end gap-3 pt-2">
         <button
-          className="mt-3 w-full px-3 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white"
-          onClick={create}
-          disabled={loading}
+          className="px-4 py-2 rounded-lg border border-[#3a3a3e] text-gray-300 
+                 hover:bg-[#2a2a2d] transition"
+          onClick={() => {
+            setIsCreateBoardCardOpen(false);
+          }}
         >
-          {loading ? "Creating..." : "Create"}
+          Cancel
         </button>
-
-        {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
+        <button
+          className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+          onClick={createBoard}
+        >
+          {loading ? "Createing..." : "Create"}
+        </button>
       </div>
     </div>
   );
