@@ -1,7 +1,9 @@
 import React from "react";
-import edit from "../../../assets/edit.svg";
+import edit from "../../assets/edit.svg";
+import { useUIContext } from "../../context/UIContext";
 
 function WorkFlowCard({ type }) {
+  const { setIsCreateTaskCardOpen } = useUIContext();
   return (
     <div className="border border-gray-400 w-96 max-h-fit p-1 rounded-md bg-[#363256]">
       <div className="m-3 rounded-md">
@@ -16,7 +18,12 @@ function WorkFlowCard({ type }) {
       </div>
       {type === "To do" ? (
         <div className=" flex justify-center">
-          <button className="bg-[#283858] text-lg py-2 px-10 m-5 border border-[#6e6d6d] hover:brightness-95 active:w-36 active:transition rounded-xl">
+          <button
+            className="bg-[#283858] text-lg py-2 px-10 m-5 border border-[#6e6d6d] hover:brightness-95 active:w-36 active:transition rounded-xl"
+            onClick={() => {
+              setIsCreateTaskCardOpen(true);
+            }}
+          >
             Create
           </button>
         </div>

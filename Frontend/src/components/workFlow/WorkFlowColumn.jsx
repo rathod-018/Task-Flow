@@ -4,7 +4,7 @@ import WorkFlowCard from "./WorkFlowCard";
 
 function WorkFlowColumn() {
   const { project } = useOutletContext();
-  console.log(project);
+  // console.log(project);
 
   return (
     <div className="flex justify-evenly mt-10">
