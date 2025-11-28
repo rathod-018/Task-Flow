@@ -5,9 +5,9 @@ import LogIn from "./pages/auth/LogIn";
 import SignUp from "./pages/auth/Signup";
 import VerifyOtp from "./pages/auth/VerifyOtp";
 import Protected from "./components/Protected";
-import WorkFlowColumn from "./components/projects/workFlow/WorkFlowColumn";
-import ListCard from "./components/projects/list/ListHeader";
-import SummaryStatus from "./components/projects/summary/SummaryStats";
+import WorkFlowColumn from "./components/workFlow/WorkFlowColumn";
+import ListCard from "./components/list/ListHeader";
+import SummaryStatus from "./components/summary/SummaryStats";
 import { ProjectContextProvider } from "./context/ProjectContext";
 
 function App() {
