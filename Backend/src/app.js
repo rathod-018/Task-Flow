@@ -24,21 +24,13 @@ app.use(cors({
 import userRoutes from "./routes/user.route.js"
 import boardRoutes from "./routes/board.route.js"
 import projectRoutes from "./routes/projects.route.js"
+import boardMembershipRoutes from "./routes/boardMembership.route.js"
 
 
 app.use("/api/v1/user", userRoutes)
 app.use("/api/v1/board", boardRoutes)
 app.use("/api/v1/project", projectRoutes)
-
-
-
-
-
-
-
-app.get("/api/v1", (req, res) => {
-    res.send("Hello from Express Server")
-})
+app.use("/api/v1/board-member", boardMembershipRoutes)
 
 
 
