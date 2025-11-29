@@ -3,7 +3,7 @@ import mongoose, { Schema } from "mongoose";
 
 const taskShema = new Schema(
     {
-        ProjectId: {
+        projectId: {
             type: mongoose.Types.ObjectId,
             ref: "Project",
             required: true

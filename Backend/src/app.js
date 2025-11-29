@@ -25,16 +25,18 @@ import userRoutes from "./routes/user.route.js"
 import boardRoutes from "./routes/board.route.js"
 import projectRoutes from "./routes/projects.route.js"
 import boardMembershipRoutes from "./routes/boardMembership.route.js"
+import taskRouter from "./routes/task.route.js"
 
 
 app.use("/api/v1/user", userRoutes)
 app.use("/api/v1/board", boardRoutes)
 app.use("/api/v1/project", projectRoutes)
 app.use("/api/v1/board-member", boardMembershipRoutes)
+app.use("/api/v1/task", taskRouter)
 
 
 
-// error handling middleware for custum json response
+// error handling middleware for custom json response
 app.use((err, req, res, next) => {
     res.status(err.statusCode || 500).json({
         statusCode: err.statusCode || 500,

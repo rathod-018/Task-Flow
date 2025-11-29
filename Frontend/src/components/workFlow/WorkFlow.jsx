@@ -2,7 +2,7 @@ import React from "react";
 import { useOutletContext } from "react-router-dom";
 import WorkFlowCard from "./WorkFlowCard";
 
-function WorkFlowColumn() {
+function WorkFlow() {
   const { project } = useOutletContext();
   // console.log(project);
 
@@ -15,4 +15,4 @@ function WorkFlowColumn() {
   );
 }
 
-export default WorkFlowColumn;
+export default WorkFlow;
