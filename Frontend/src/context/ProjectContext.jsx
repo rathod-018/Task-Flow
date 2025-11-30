@@ -8,48 +8,48 @@ const ProjectContext = createContext();
 export function ProjectContextProvider({ children }) {
   const { user } = useUserContext();
   const [projectList, setProjectList] = useState([]);
-  const [projectData, setProjectData] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // console.log(user);
   const boardId = user?.userPageHistory?.boardId;
   const projectId = user?.userPageHistory?.projectId;
+
   const fetchAllProjects = async () => {
-    if (!boardId) {
-      return;
-    }
+    if (!boardId) return;
+
     try {
       setLoading(true);
       const { data } = await api.get(`/project/all/${boardId}`);
-      setProjectList(data.data);
-      if (data.data.length > 0 && !projectData) {
-        setProjectData(data.data[0]);
-      } else {
-        setProjectData(null);
+
+      const projects = data.data || [];
+      setProjectList(projects);
+
+      if (projects.length > 0 && !projectId) {
+        setSelectedProject(projects[0]);
       }
-    } catch (error) {
-      const msg = error.response?.data?.message || "something went wrong";
-      toast.error(msg);
+      if (projects.length === 0) {
+        setSelectedProject(null);
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
   };
 
   const fetchSelectedProject = async () => {
-    if (!projectId) {
-      return;
-    }
+    if (!projectId) return;
+
     try {
+      setLoading(true);
       const { data } = await api.get(`/project/${projectId}`);
-      // console.log(data)
+
       if (data.statusCode === 200) {
-        setProjectData(data.data);
-      } else {
-        setProjectData(null);
+        setSelectedProject(data.data);
       }
-    } catch (error) {
-      const msg = error.response?.data?.message || "something went wrong";
-      toast.error(msg);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Something went wrong");
+      setSelectedProject(null);
     } finally {
       setLoading(false);
     }
@@ -63,15 +63,18 @@ export function ProjectContextProvider({ children }) {
     fetchSelectedProject();
   }, [projectId]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div className="w-screen h-screen flex justify-center items-center">
+        Loading...
+      </div>
+    );
 
   return (
-    <ProjectContext.Provider value={{ projectData, projectList }}>
+    <ProjectContext.Provider value={{ selectedProject, projectList }}>
       {children}
     </ProjectContext.Provider>
   );
 }
 
-export const useProjectContext = () => {
-  return useContext(ProjectContext);
-};
+export const useProjectContext = () => useContext(ProjectContext);
