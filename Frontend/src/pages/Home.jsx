@@ -59,7 +59,7 @@ const Home = () => {
       )}
       {isAddMemberCardOpen && (
         <div
-          className="absolute top-14 inset-x-0 bottom-0 z-50 flex justify-center items-start bg-black/70 pt-14"
+          className="absolute top-14 inset-0 z-50 flex justify-center items-center bg-black/70"
           onClick={() => setIsAddMemberCardOpen(false)}
         >
           <AddMember />
