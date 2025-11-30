@@ -3,6 +3,8 @@ import { useUIContext } from "../../context/UIContext";
 import { useMembersByStatus } from "../../hooks/useFetchMembershipBoard";
 import api from "../../api/axios";
 import { useUserContext } from "../../context/UserContext";
+import { toast } from "react-toastify";
+import { useTaskContext } from "../../context/TaskContext";
 
 function CreateTaskCard() {
   const { user } = useUserContext();
@@ -14,6 +16,8 @@ function CreateTaskCard() {
   const [assigneeId, setAssigneeId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const { fetchTasks } = useTaskContext();
 
   const handdleSubmit = async () => {
     if (!title || !title.trim()) {
@@ -33,7 +37,11 @@ function CreateTaskCard() {
         date,
         assigneeId,
       });
-      console.log(data);
+      if (data.statusCode === 201) {
+        toast.success("Task created..");
+        setIsCreateTaskCardOpen(false);
+        fetchTasks();
+      }
     } catch (error) {
       setError(
         error.response.data.message || error.message || "Something went wrong"
@@ -56,6 +64,7 @@ function CreateTaskCard() {
           placeholder="Enter task title"
           className="bg-[#232327] text-gray-200 border border-[#3a3a3e] rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
           onChange={(e) => setTitle(e.target.value)}
+          disabled={loading}
         />
       </div>
       <div className="flex flex-col space-y-1">
@@ -65,6 +74,7 @@ function CreateTaskCard() {
           placeholder="Enter task description"
           className="bg-[#232327] text-gray-200 border border-[#3a3a3e] rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
           onChange={(e) => setDescription(e.target.value)}
+          disabled={loading}
         />
       </div>
       <div className="flex flex-col space-y-1">
@@ -75,6 +85,7 @@ function CreateTaskCard() {
             min={new Date(Date.now() + 86400000).toISOString().split("T")[0]}
             className="bg-[#232327] text-gray-200 border border-[#3a3a3e] rounded-lg px-3 py-2 w-full outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
             onChange={(e) => setDate(e.target.value)}
+            disabled={loading}
           />
           <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
             📅
@@ -86,6 +97,7 @@ function CreateTaskCard() {
         <select
           className="bg-[#232327] text-gray-200 border border-[#3a3a3e] rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
           onChange={(e) => setAssigneeId(e.target.value)}
+          disabled={loading}
         >
           {members.length === 0 ? (
             <option>no user found</option>
@@ -114,8 +126,9 @@ function CreateTaskCard() {
         <button
           className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
           onClick={handdleSubmit}
+          disabled={loading}
         >
-          Create
+          {loading ? "Createing" : "Create"}
         </button>
       </div>
     </div>
