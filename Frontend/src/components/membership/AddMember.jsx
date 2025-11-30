@@ -33,7 +33,7 @@ function AddMember() {
 
   return (
     <div
-      className="bg-[#18181b] md:w-[60rem]  p-5 rounded-xl"
+      className=" bg-[#18181b] w-full md:w-[60rem] p-5 rounded-xl max-h-[80vh] min-h-80 flex flex-col overflow-hidden mt-16"
       onClick={(e) => e.stopPropagation()}
     >
       <div className="pb-4 mt-3 mx-5 ">

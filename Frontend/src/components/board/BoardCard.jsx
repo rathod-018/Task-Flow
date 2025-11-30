@@ -17,7 +17,7 @@ function BoardCard() {
   useEffect(() => {
     setCreated(createdData);
   }, [createdLoading]);
-
+  // TODO: have to still work on joined boards
   // useEffect(() => {
   //   setJoined(joinedBoard);
   // }, [joinedBoard]);

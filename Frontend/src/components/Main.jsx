@@ -9,7 +9,7 @@ import notebook from "../assets/notebook.svg";
 import { useUIContext } from "../context/UIContext";
 
 function Main() {
-  const { projectData } = useProjectContext();
+  const { selectedProject } = useProjectContext();
   const [isOpen, setIsOpen] = useState(false);
   const [project, setProject] = useState(null);
   const { user } = useUserContext();
@@ -19,8 +19,8 @@ function Main() {
   // console.log(project)
 
   useEffect(() => {
-    setProject(projectData);
-  }, [projectData]);
+    setProject(selectedProject);
+  }, [selectedProject]);
   return (
     <div className="w-full h-full flex justify-center items-center overflow-hidden bg-gradient-to-br from-[#0a0a0b] to-[#121214]">
       {selectedBoard ? (
@@ -115,7 +115,9 @@ function Main() {
 
           <div className="flex-1 overflow-auto p-6">
             <div className="max-w-[110rem] mx-auto">
-              <Outlet context={{ project }} />
+              {/* <Outlet context={{ project }} /> 
+               example we can send props by using outlet*/}
+              <Outlet />
             </div>
           </div>
         </div>

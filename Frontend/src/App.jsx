@@ -9,6 +9,7 @@ import WorkFlow from "./components/workFlow/WorkFlow";
 import ListCard from "./components/list/ListHeader";
 import SummaryStatus from "./components/summary/SummaryStats";
 import { ProjectContextProvider } from "./context/ProjectContext";
+import { TaskContextProvider } from "./context/TaskContext";
 
 function App() {
   return (
@@ -23,7 +24,9 @@ function App() {
           path="/home"
           element={
             <ProjectContextProvider>
-              <Home />
+              <TaskContextProvider>
+                <Home />
+              </TaskContextProvider>
             </ProjectContextProvider>
           }
         >
