@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useUserContext } from "../../context/UserContext";
-import CreateProject from "../projects/CreateProject";
+import CreateProject from "../projects/ProjectForm";
 import api from "../../api/axios";
 import create from "../../assets/create.svg";
 import boardIcon from "../../assets/board.svg";
@@ -11,13 +11,12 @@ import { usePageHistory } from "../../hooks/usePageHisrory";
 import { useUIContext } from "../../context/UIContext";
 
 function Sidebar() {
-  const { setIsCreateProjectCardOpen } = useUIContext();
+  const { openProjectForm } = useUIContext();
   const { user } = useUserContext();
   const [board, setBoard] = useState(null);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [projectOpen, setProjectOpen] = useState(true);
-  const [isCreatePageOpen, setCreatePageOpen] = useState(false);
   const { updateLastOpened } = usePageHistory();
 
   const { projectList } = useProjectContext();
@@ -66,7 +65,7 @@ function Sidebar() {
 
             <div className="flex gap-3 items-center">
               <button
-                onClick={() => setIsCreateProjectCardOpen(true)}
+                onClick={() => openProjectForm()}
                 aria-label="create project"
                 className="p-1 rounded hover:bg-[#16171a]"
               >

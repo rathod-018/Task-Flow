@@ -3,12 +3,13 @@ import api from "../../api/axios";
 import { useUserContext } from "../../context/UserContext";
 
 function Card({ result, members }) {
-  console.log(members)
   const { user } = useUserContext();
   const [invited, setInvited] = useState(false);
 
   useEffect(() => {
-    const alredyInvited = members.some((ele) => ele?.userId?._id === result?._id);
+    const alredyInvited = members.some(
+      (ele) => ele?.userId?._id === result?._id
+    );
     if (alredyInvited) {
       setInvited(true);
     }

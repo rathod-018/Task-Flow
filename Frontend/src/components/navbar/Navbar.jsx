@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import menuBurger from "../../assets/menuBurger.svg";
 import bellIcon from "../../assets/bell.svg";
 import createIcon from "../../assets/create.svg";
@@ -7,23 +7,12 @@ import { useUserContext } from "../../context/UserContext";
 import { useUIContext } from "../../context/UIContext";
 
 function Navbar() {
-  const {
-    setIsCreateBoardCardOpen,
-    setIsAddMemberCardOpen,
-    setIsCreateTaskCardOpen,
-    setIsCreateProjectCardOpen,
-  } = useUIContext();
+  const { openBoardForm, setAddMemberOpen } = useUIContext();
   const { user } = useUserContext();
   const avatarUrl = user?.avatar.url;
 
   return (
-    <header
-      className="h-14 w-full bg-[#0d1117] text-gray-200 shadow-xl flex items-center justify-between px-6 border-b border-[#30363d] relative"
-      onClick={() => {
-        setIsCreateTaskCardOpen(false);
-        setIsCreateProjectCardOpen(false);
-      }}
-    >
+    <header className="h-14 w-full bg-[#0d1117] text-gray-200 shadow-xl flex items-center justify-between px-6 border-b border-[#30363d] relative">
       <div className="flex items-center gap-3">
         <img
           src={menuBurger}
@@ -35,8 +24,7 @@ function Navbar() {
       <div className="flex items-center gap-40">
         <button
           onClick={() => {
-            setIsCreateBoardCardOpen((prev) => !prev);
-            setIsAddMemberCardOpen(false);
+            openBoardForm();
           }}
           className="flex items-center gap-4 bg-blue-600 hover:bg-blue-700 pl-4 py-2 rounded-lg text-white transition cursor-pointer"
         >
@@ -50,8 +38,7 @@ function Navbar() {
             alt="add-user"
             className="w-6 invert opacity-80 hover:opacity-100 transition cursor-pointer"
             onClick={() => {
-              setIsAddMemberCardOpen((prev) => !prev);
-              setIsCreateBoardCardOpen(false);
+              setAddMemberOpen(true);
             }}
           />
           <img

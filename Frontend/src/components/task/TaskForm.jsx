@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useUIContext } from "../../context/UIContext";
 import { useMembersByStatus } from "../../hooks/useFetchMembershipBoard";
 import api from "../../api/axios";
@@ -6,9 +6,9 @@ import { useUserContext } from "../../context/UserContext";
 import { toast } from "react-toastify";
 import { useTaskContext } from "../../context/TaskContext";
 
-function CreateTaskCard() {
+function TaskForm() {
   const { user } = useUserContext();
-  const { setIsCreateTaskCardOpen } = useUIContext();
+  const { taskForm, closeTaskForm } = useUIContext();
   const members = useMembersByStatus("accepted");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -16,7 +16,7 @@ function CreateTaskCard() {
   const [assigneeId, setAssigneeId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+  const cardRef = useRef();
   const { fetchTasks } = useTaskContext();
 
   const handdleSubmit = async () => {
@@ -39,7 +39,7 @@ function CreateTaskCard() {
       });
       if (data.statusCode === 201) {
         toast.success("Task created..");
-        setIsCreateTaskCardOpen(false);
+        closeTaskForm();
         fetchTasks();
       }
     } catch (error) {
@@ -51,8 +51,20 @@ function CreateTaskCard() {
     }
   };
 
+  // to close task form by clicking window
+  useEffect(() => {
+    const close = (e) => {
+      if (cardRef.current && !cardRef.current.contains(e.target)) {
+        closeTaskForm();
+      }
+    };
+    window.addEventListener("mousedown", close);
+    return () => window.removeEventListener("mousedown", close);
+  }, [taskForm.open, closeTaskForm]);
+
   return (
     <div
+      ref={cardRef}
       onClick={(e) => e.stopPropagation()}
       className="w-[45rem] bg-[#18181b] rounded-xl shadow-2xl p-6 space-y-5 border border-[#2a2a2d]"
     >
@@ -72,7 +84,7 @@ function CreateTaskCard() {
         <textarea
           rows="4"
           placeholder="Enter task description"
-          className="bg-[#232327] text-gray-200 border border-[#3a3a3e] rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
+          className="resize-none bg-[#232327] text-gray-200 border border-[#3a3a3e] rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
           onChange={(e) => setDescription(e.target.value)}
           disabled={loading}
         />
@@ -118,7 +130,7 @@ function CreateTaskCard() {
         <button
           className="px-4 py-2 rounded-lg border border-[#3a3a3e] text-gray-300 hover:bg-[#2a2a2d] transition"
           onClick={() => {
-            setIsCreateTaskCardOpen(false);
+            closeTaskForm(false);
           }}
         >
           Cancel
@@ -135,4 +147,4 @@ function CreateTaskCard() {
   );
 }
 
-export default CreateTaskCard;
+export default TaskForm;

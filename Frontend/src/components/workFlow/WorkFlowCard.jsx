@@ -8,7 +8,7 @@ import { useTaskContext } from "../../context/TaskContext";
 const stageLabels = ["todo", "in_progress", "done"];
 
 function WorkFlowCard({ type, tasks = [] }) {
-  const { setIsCreateTaskCardOpen } = useUIContext();
+  const { openTaskForm } = useUIContext();
   const { fetchTasks } = useTaskContext();
 
   const colors = {
@@ -75,7 +75,13 @@ function WorkFlowCard({ type, tasks = [] }) {
                   {task.status}
                 </div>
 
-                <img src={edit} className="w-4 invert opacity-50" />
+                <img
+                  src={edit}
+                  className="w-4 invert opacity-50"
+                  onClick={() => {
+                    console.log(task);
+                  }}
+                />
               </div>
               {openId === task._id && (
                 <div
@@ -106,7 +112,7 @@ function WorkFlowCard({ type, tasks = [] }) {
       {type === "To do" && (
         <div className="px-4 pt-2 pb-3">
           <button
-            onClick={() => setIsCreateTaskCardOpen(true)}
+            onClick={() => openTaskForm()}
             className="w-full text-sm py-2 rounded-md bg-[#2a2a2d] text-gray-300 hover:bg-[#323236] border border-[#3a3a3d]"
           >
             + Create Task

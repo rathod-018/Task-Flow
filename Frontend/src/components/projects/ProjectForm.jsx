@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import api from "../../api/axios";
 import { useUserContext } from "../../context/UserContext";
 import { usePageHistory } from "../../hooks/usePageHisrory";
 import { toast } from "react-toastify";
 import { useUIContext } from "../../context/UIContext";
 
-function CreateProject({ close }) {
-  const { setIsCreateProjectCardOpen } = useUIContext();
+function ProjectForm() {
+  const { projectForm, closeProjectForm } = useUIContext();
   const { user } = useUserContext();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { updateLastOpened } = usePageHistory();
+  const cardRef = useRef();
 
   const boardId = user?.userPageHistory?.boardId;
 
@@ -35,7 +36,7 @@ function CreateProject({ close }) {
       if (data.statusCode === 201) {
         toast.success("Project created ✅");
         updateLastOpened(boardId, data.data?._id);
-        setIsCreateProjectCardOpen(false);
+        closeProjectForm();
       }
     } catch (error) {
       setError(
@@ -52,10 +53,21 @@ function CreateProject({ close }) {
       close();
     }
   }, [boardId]);
+  // to close when we click on ouside of project card
+  useEffect(() => {
+    const close = (e) => {
+      if (cardRef.current && !cardRef.current.contains(e.target)) {
+        closeProjectForm();
+      }
+    };
+    window.addEventListener("mousedown", close);
+    return () => window.removeEventListener("mousedown", close);
+  }, [projectForm.open, closeProjectForm]);
 
   return (
     <div
       className="bg-[#18181b] w-[45rem] h-[30rem]  rounded-2xl shadow-xl p-6 flex flex-col gap-6 border border-[#2e2e32]"
+      ref={cardRef}
       onClick={(e) => e.stopPropagation()}
     >
       <h2 className="text-2xl font-semibold text-white">Create New Project</h2>
@@ -66,6 +78,7 @@ function CreateProject({ close }) {
           <input
             type="text"
             placeholder="Enter project title"
+            disabled={loading}
             className="p-2 bg-[#2b2b31] border border-[#3a3a40] rounded-lg text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             onChange={(e) => setTitle(e.target.value)}
           />
@@ -78,7 +91,8 @@ function CreateProject({ close }) {
           <textarea
             rows="4"
             placeholder="Enter project description"
-            className="p-2 bg-[#232327] border border-[#3a3a4e] rounded-lg text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            disabled={loading}
+            className="resize-none p-2 bg-[#232327] border border-[#3a3a4e] rounded-lg text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             onChange={(e) => setDescription(e.target.value)}
           />
         </div>
@@ -86,20 +100,22 @@ function CreateProject({ close }) {
       {error && <div className="text-red-500">{error}</div>}
       <div className="flex justify-end gap-3">
         <button
-          onClick={() => setIsCreateProjectCardOpen(false)}
+          onClick={() => closeProjectForm()}
+          disabled={loading}
           className="px-4 py-2 rounded-lg border border-[#3a3a40] text-gray-300 hover:bg-[#2b2b31] transition"
         >
           Cancel
         </button>
         <button
-          className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
           onClick={createProject}
+          disabled={loading}
+          className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
         >
-          Create
+          {loading ? "Createing.." : "Create"}
         </button>
       </div>
     </div>
   );
 }
 
-export default CreateProject;
+export default ProjectForm;

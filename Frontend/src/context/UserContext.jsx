@@ -21,6 +21,7 @@ export function UserContextProvider({ children }) {
       // console.log("context:", data);
     } catch (error) {
       console.log(error);
+      setUser(null);
     } finally {
       // console.log("running....");
       setLoading(false);

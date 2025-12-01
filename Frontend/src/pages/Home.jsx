@@ -1,24 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import Navbar from "../components/navbar/Navbar";
 import Sidebar from "../components/sidebar/Sidebar";
 import Main from "../components/Main";
-import CreateTaskCard from "../components/task/CreateTaskCard";
-import CreateBoard from "../components/board/CreateBoard";
-import CreateProject from "../components/projects/CreateProject";
+import TaskForm from "../components/task/TaskForm";
+import BoardForm from "../components/board/BoardForm";
+import ProjectForm from "../components/projects/ProjectForm";
 import AddMember from "../components/membership/AddMember";
 import { useUIContext } from "../context/UIContext";
 
 const Home = () => {
-  const {
-    isCreateTaskCardOpen,
-    setIsCreateTaskCardOpen,
-    isCreateBoardCardOpen,
-    setIsCreateBoardCardOpen,
-    isCreateProjectCardOpen,
-    setIsCreateProjectCardOpen,
-    isAddMemberCardOpen,
-    setIsAddMemberCardOpen,
-  } = useUIContext();
+  const { taskForm, boardForm, projectForm, addMemberOpen, setAddMemberOpen } =
+    useUIContext();
   return (
     <div className="h-screen w-screen relative overflow-hidden">
       <div className="fixed top-0 left-0 w-full h-14 z-20">
@@ -33,34 +25,25 @@ const Home = () => {
           <Main />
         </div>
       </div>
-      {isCreateTaskCardOpen && (
-        <div
-          className="absolute top-14 inset-x-0 bottom-0 z-50 flex justify-center items-center bg-black/70"
-          onClick={() => setIsCreateTaskCardOpen(false)}
-        >
-          <CreateTaskCard />
+      {taskForm.open && (
+        <div className="absolute top-0 inset-x-0 bottom-0 z-50 flex justify-center items-center bg-black/70">
+          <TaskForm />
         </div>
       )}
-      {isCreateBoardCardOpen && (
-        <div
-          className="absolute top-14 inset-x-0 bottom-0 z-50 flex justify-center items-center bg-black/70"
-          onClick={() => setIsCreateBoardCardOpen(false)}
-        >
-          <CreateBoard />
+      {boardForm.open && (
+        <div className="absolute top-0 inset-x-0 bottom-0 z-50 flex justify-center items-center bg-black/70">
+          <BoardForm />
         </div>
       )}
-      {isCreateProjectCardOpen && (
-        <div
-          className="absolute top-14 inset-x-0 bottom-0 z-50 flex justify-center items-center bg-black/70"
-          onClick={() => setIsCreateProjectCardOpen(false)}
-        >
-          <CreateProject />
+      {projectForm.open && (
+        <div className="absolute top-0 inset-x-0 bottom-0 z-50 flex justify-center items-center bg-black/70">
+          <ProjectForm />
         </div>
       )}
-      {isAddMemberCardOpen && (
+      {addMemberOpen && (
         <div
-          className="absolute top-14 inset-0 z-50 flex justify-center items-center bg-black/70"
-          onClick={() => setIsAddMemberCardOpen(false)}
+          className="absolute top-0 inset-0 z-50 flex justify-center items-center bg-black/70"
+          onClick={() => setAddMemberOpen(false)}
         >
           <AddMember />
         </div>

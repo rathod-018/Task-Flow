@@ -4,7 +4,7 @@ import { useTaskContext } from "../../context/TaskContext";
 
 function WorkFlow() {
   const [tasks, setTasks] = useState([]);
-  const { taskData} = useTaskContext();
+  const { taskData } = useTaskContext();
 
   useEffect(() => {
     setTasks(taskData);
@@ -13,8 +13,6 @@ function WorkFlow() {
   const todo = tasks.filter((t) => t.status === "todo");
   const inProgress = tasks.filter((t) => t.status === "in_progress");
   const done = tasks.filter((t) => t.status === "done");
-
-
 
   return (
     <div className="flex justify-evenly mt-10">
