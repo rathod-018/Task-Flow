@@ -58,40 +58,51 @@ function WorkFlowCard({ type, tasks = [] }) {
           tasks.map((task) => (
             <div
               key={task._id}
-              className="px-4 py-3 flex justify-between items-center hover:bg-[#232326] relative"
-              onClick={(e) => e.stopPropagation()}
+              className="px-4 mx-3 my-1 py-3 flex justify-between items-center rounded-xl border border-white/10 bg-black/20 hover:border-white/20 transition-all relative"
+              onClick={(e) => {
+                e.stopPropagation();
+                const data = task;
+                openTaskForm("read", data);
+              }}
             >
-              <span className="text-sm text-gray-300">{task.title}</span>
+              <span className="text-sm text-gray-300 truncate w-36">
+                {task.title}
+              </span>
 
               <div className="flex items-center gap-2">
                 <div
-                  className={`px-2 py-0.5 text-xs rounded-md cursor-pointer border border-[#333] ${
+                  className={`px-2 py-0.5 text-xs rounded-md cursor-pointer border border-[#333] hover:scale-105 ${
                     colors[task.status]
                   }`}
-                  onClick={() =>
-                    setOpenId(openId === task._id ? null : task._id)
-                  }
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpenId(openId === task._id ? null : task._id);
+                  }}
                 >
                   {task.status}
                 </div>
 
-                <img
-                  src={edit}
-                  className="w-4 invert opacity-50"
-                  onClick={() => {
-                    console.log(task);
-                  }}
-                />
+                {task.status !== "done" && (
+                  <img
+                    src={edit}
+                    className="w-4 invert opacity-50 hover:opacity-70 hover:scale-105"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const data = task;
+                      openTaskForm("edit", data);
+                    }}
+                  />
+                )}
               </div>
               {openId === task._id && (
                 <div
-                  className="absolute right-10 top-9 w-36 bg-[#2b2b2f] border border-[#3a3a3d] rounded-md shadow-xl z-50"
+                  className="absolute right-10 top-9 w-36 bg-[#1b1b1c] border border-white/10 rounded-lg shadow-lg z-50"
                   onClick={(e) => e.stopPropagation()}
                 >
                   {stageLabels.map((status) => (
                     <p
                       key={status}
-                      className="px-3 py-2 text-sm text-gray-300 hover:bg-[#333335] cursor-pointer"
+                      className="px-3 py-2 text-sm text-gray-300 border-b border-white/10 last:border-none hover:bg-[#333335] cursor-pointer transition-all"
                       onClick={() => {
                         updateState(task._id, status);
                         setOpenId(null);
@@ -113,7 +124,7 @@ function WorkFlowCard({ type, tasks = [] }) {
         <div className="px-4 pt-2 pb-3">
           <button
             onClick={() => openTaskForm()}
-            className="w-full text-sm py-2 rounded-md bg-[#2a2a2d] text-gray-300 hover:bg-[#323236] border border-[#3a3a3d]"
+            className="w-full text-sm py-2 rounded-md bg-[#2a2a2d] text-gray-300 hover:bg-[#323236] hover:scale-105 border border-[#3a3a3d]"
           >
             + Create Task
           </button>

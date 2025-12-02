@@ -41,7 +41,7 @@ export const createTask = asyncHandler(async (req, res) => {
         })
 
     res.status(201).json(
-        new ApiResponse(201, task, "Task Created successfully")
+        new ApiResponse(201, task, "Task Created")
     )
 
 })
@@ -60,9 +60,13 @@ export const getAllTask = asyncHandler(async (req, res) => {
     }
 
     const tasks = await Task.find({ projectId: project?._id })
+        .populate({
+            path: "assigneeId",
+            select: "name email avatar"
+        }).sort({ createdAt: -1 })
 
     res.status(200).json(
-        new ApiResponse(200, tasks, "All task fetched successfully")
+        new ApiResponse(200, tasks, "All task fetched")
     )
 })
 
@@ -85,7 +89,61 @@ export const updateTaskStatus = asyncHandler(async (req, res) => {
     }
 
     res.status(200).json(
-        new ApiResponse(200, task, "Task status updated successfully")
+        new ApiResponse(200, task, "Task status updated")
     )
 
+})
+
+
+export const updateTask = asyncHandler(async (req, res) => {
+    const { taskId } = req.params
+    const { title, description, date, assigneeId } = req.body
+
+    if (!taskId || !isValidObjectId(taskId)) {
+        throw new ApiError(400, "Invalid TaskId")
+    }
+
+    if ([title, description, date].some((ele) => !ele || ele.trim() === "")) {
+        throw new ApiError(400, "All fields are required")
+    }
+    let assignee;
+    if (assigneeId) {
+        assignee = await User.findById(assigneeId)
+        if (!assignee) {
+            throw new ApiError(400, "Invalid assigneeId")
+        }
+    }
+
+    const task = await Task.findByIdAndUpdate(taskId, {
+        title,
+        description,
+        dueDate: new Date(date) || null,
+        assigneeId: assignee?._id || null
+    }, { new: true })
+
+    if (!task) {
+        throw new ApiError(400, "Invalid TaskId")
+    }
+
+    res.status(200).json(
+        new ApiResponse(200, task, "Task updated")
+    )
+
+})
+
+export const deleteTask = asyncHandler(async (req, res) => {
+    const { taskId } = req.params
+
+    if (!taskId || !isValidObjectId(taskId)) {
+        throw new ApiError(400, "Invalid TaskId")
+    }
+
+    const task = await Task.findByIdAndDelete(taskId)
+
+    if (!task) {
+        throw new ApiError(400, "Invalid TaskId")
+    }
+    res.status(200).json(
+        new ApiResponse(200, task, "Task deleted")
+    )
 })

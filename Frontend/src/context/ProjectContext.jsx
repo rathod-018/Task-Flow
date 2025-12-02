@@ -63,12 +63,12 @@ export function ProjectContextProvider({ children }) {
     fetchSelectedProject();
   }, [projectId]);
 
-  if (loading)
-    return (
-      <div className="w-screen h-screen flex justify-center items-center">
-        Loading...
-      </div>
-    );
+  // if (loading)
+  //   return (
+  //     <div className="w-screen h-screen flex justify-center items-center">
+  //       Loading...
+  //     </div>
+  //   );
 
   return (
     <ProjectContext.Provider value={{ selectedProject, projectList }}>

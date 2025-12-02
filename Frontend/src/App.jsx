@@ -6,8 +6,8 @@ import SignUp from "./pages/auth/Signup";
 import VerifyOtp from "./pages/auth/VerifyOtp";
 import Protected from "./components/Protected";
 import WorkFlow from "./components/workFlow/WorkFlow";
-import ListCard from "./components/list/ListHeader";
-import SummaryStatus from "./components/summary/SummaryStats";
+import List from "./components/list/List";
+import Summary from "./components/summary/Summary";
 import { ProjectContextProvider } from "./context/ProjectContext";
 import { TaskContextProvider } from "./context/TaskContext";
 
@@ -31,8 +31,8 @@ function App() {
           }
         >
           <Route path="work-flow" index element={<WorkFlow />} />
-          <Route path="list" element={<ListCard />} />
-          <Route path="summary" element={<SummaryStatus />} />
+          <Route path="list" element={<List />} />
+          <Route path="summary" element={<Summary />} />
         </Route>
       </Route>
     </Routes>
