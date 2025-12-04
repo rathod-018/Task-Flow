@@ -71,7 +71,7 @@ export function ProjectContextProvider({ children }) {
   //   );
 
   return (
-    <ProjectContext.Provider value={{ selectedProject, projectList }}>
+    <ProjectContext.Provider value={{ selectedProject, projectList, loading }}>
       {children}
     </ProjectContext.Provider>
   );

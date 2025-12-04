@@ -53,7 +53,7 @@ function WorkFlowCard({ type, tasks = [] }) {
         <span className="text-xs text-gray-400">{tasks.length}</span>
       </div>
 
-      <div className="flex flex-col min-h-40 max-h-72 overflow-y-auto custom-scroll">
+      <div className="flex flex-col min-h-40 max-h-96 overflow-y-auto custom-scroll">
         {tasks.length ? (
           tasks.map((task) => (
             <div

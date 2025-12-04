@@ -11,9 +11,12 @@ function List() {
     setData(taskData);
   }, [taskData]);
   return (
-    <div className="max-h-[35rem] overflow-y-auto custom-scroll border border-[#3f3e3e] rounded-lg transition">
-      <table className="w-full text-left text-[15px] font-medium text-gray-300">
-        <thead className="sticky top-0 z-20 border-b border-[#2e2e32] bg-[#393939] text-gray-400 uppercase text-sm font-semibold">
+    <div
+      className="max-h-[36rem] mx-10 mt-10 overflow-y-auto custom-scroll 
+                border border-white/5 rounded-xl shadow-xl transition"
+    >
+      <table className="w-full text-left text-[15px] font-medium text-zinc-300">
+        <thead className="sticky top-0 z-20 bg-[#18181b] border-b border-white/10 text-zinc-400 uppercase text-xs tracking-wide">
           <tr>
             <th className="px-5 py-4">S.No</th>
             <th className="px-5 py-4">Title</th>
@@ -29,45 +32,47 @@ function List() {
             data.map((todo, index) => (
               <tr
                 key={todo?._id}
-                onClick={() => {
-                  const data = todo;
-                  openTaskForm("read", data);
-                }}
-                className="border-b border-[#2e2e32] hover:bg-[#3f3e3e0d] transition"
+                onClick={() => openTaskForm("read", todo)}
+                className="border-b border-white/5 hover:bg-white/[0.03] transition-colors cursor-pointer"
               >
-                <td className=" px-5 py-4">{index + 1}</td>
-                <td className=" px-5 py-4">{todo?.title}</td>
-                <td className=" px-5 py-4">
+                <td className="px-5 py-4">{index + 1}</td>
+                <td className="px-5 py-4 text-zinc-200">{todo?.title}</td>
+                <td className="px-5 py-4">
                   <span
-                    className={`px-3 py-1.5 rounded-lg text-sm
-                     ${
-                       todo.status === "todo"
-                         ? "bg-blue-500/20 text-blue-400"
-                         : todo.status !== "done"
-                         ? "bg-amber-500/20 text-amber-400"
-                         : "bg-green-500/20 text-green-400"
-                     }
-                        `}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium capitalize
+                  ${
+                    todo.status === "todo"
+                      ? "bg-blue-500/20 text-blue-400"
+                      : todo.status !== "done"
+                      ? "bg-amber-500/20 text-amber-400"
+                      : "bg-green-500/20 text-green-400"
+                  }
+                `}
                   >
                     {todo?.status}
                   </span>
                 </td>
-                <td className=" px-5 py-4">
+
+                <td className="px-5 py-4 text-zinc-400">
                   {todo?.assigneeId ? todo?.assigneeId?.name : "None"}
                 </td>
-                <td className="px-5 py-4">
+
+                <td className="px-5 py-4 text-zinc-400">
                   {new Date(todo?.dueDate).toLocaleDateString("en-GB")}
                 </td>
-                <td className="px-5 py-4">
+
+                <td className="px-5 py-4 text-zinc-400">
                   {new Date(todo?.createdAt).toLocaleDateString("en-GB")}
                 </td>
+
                 <td className="px-1 py-2">
                   <button
-                    className="px-4 py-2  bg-[#333336] text-sm rounded-lg hover:bg-[#3f3f43] hover:scale-105 transition"
+                    className="px-4 py-2 bg-[#2a2a2e] text-sm rounded-lg 
+                           hover:bg-[#323236] hover:scale-105 active:scale-95 
+                           transition"
                     onClick={(e) => {
                       e.stopPropagation();
-                      const data = todo;
-                      openTaskForm("edit", data);
+                      openTaskForm("edit", todo);
                     }}
                   >
                     Edit
@@ -77,10 +82,7 @@ function List() {
             ))
           ) : (
             <tr>
-              <td
-                className="text-center py-4 text-gray-400 border-[#393939]"
-                colSpan="7"
-              >
+              <td className="text-center py-6 text-zinc-500" colSpan="7">
                 No todos found
               </td>
             </tr>
