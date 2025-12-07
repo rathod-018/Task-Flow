@@ -11,7 +11,7 @@ function TaskForm() {
   const { taskForm, closeTaskForm } = useUIContext();
   const prevData = taskForm?.data;
   const members = useMembersByStatus("accepted");
-  const [title, setTitle] = useState(prevData?.title || "");
+  const [taskName, setTaskName] = useState(prevData?.name || "");
   const [description, setDescription] = useState(prevData?.description || "");
   const [date, setDate] = useState(prevData?.dueDate.split("T")[0] || "");
   const [assigneeId, setAssigneeId] = useState(prevData?.assigneeId || "");
@@ -21,8 +21,8 @@ function TaskForm() {
   const { fetchTasks } = useTaskContext();
 
   const handdleSubmit = async () => {
-    if (!title || !title.trim()) {
-      return setError("Title is required");
+    if (!taskName || !taskName.trim()) {
+      return setError("Task Name is required");
     }
     if (!description || !description.trim()) {
       return setError("Description is required");
@@ -36,7 +36,7 @@ function TaskForm() {
       setLoading(true);
       setError("");
       const fields = {
-        title,
+        name: taskName,
         description,
         date,
         assigneeId,
@@ -105,7 +105,7 @@ function TaskForm() {
     <div
       ref={cardRef}
       onClick={(e) => e.stopPropagation()}
-      className="w-[45rem] bg-[#18181b] rounded-xl shadow-2xl p-6 space-y-5 border border-[#2a2a2d]"
+      className="md:w-[45rem] w-full m-10 bg-[#18181b] rounded-xl shadow-2xl p-6 space-y-5 border border-[#2a2a2d]"
     >
       <h2 className="text-2xl font-semibold text-gray-200">
         {taskForm?.mode === "read"
@@ -115,13 +115,13 @@ function TaskForm() {
           : "Create New Task"}
       </h2>
       <div className="flex flex-col space-y-1">
-        <label className="text-sm font-medium text-gray-300">Title</label>
+        <label className="text-sm font-medium text-gray-300">Name</label>
         <input
           type="text"
-          placeholder="Enter task title"
-          value={title}
+          placeholder="Enter task name"
+          value={taskName}
           className="bg-[#232327] text-gray-200 border border-[#3a3a3e] rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) => setTaskName(e.target.value)}
           disabled={loading}
         />
       </div>

@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Welcome from "./pages/Welcome";
 import Home from "./pages/Home";
 import LogIn from "./pages/auth/LogIn";
-import SignUp from "./pages/auth/Signup";
+import SignUp from "./pages/auth/SignUp";
 import VerifyOtp from "./pages/auth/VerifyOtp";
 import Protected from "./components/Protected";
 import WorkFlow from "./components/workFlow/WorkFlow";

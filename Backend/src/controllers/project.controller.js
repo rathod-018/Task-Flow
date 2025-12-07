@@ -7,14 +7,14 @@ import { isValidObjectId } from "mongoose"
 
 export const createProject = asyncHandler(async (req, res) => {
     const { boardId } = req.params
-    const { title, description } = req.body
+    const { name, description } = req.body
 
     if (!boardId || !isValidObjectId(boardId)) {
         throw new ApiError(400, "Invalid or missing boardId");
     }
 
-    if (!title || !description) {
-        throw new ApiError(400, "Title and description are required");
+    if (!name || !description) {
+        throw new ApiError(400, "name and description are required");
     }
 
     const boardExist = await Board.findById(boardId)
@@ -24,7 +24,7 @@ export const createProject = asyncHandler(async (req, res) => {
     }
 
     const project = await Project.create({
-        title,
+        name,
         description,
         boardId
     })
@@ -37,20 +37,20 @@ export const createProject = asyncHandler(async (req, res) => {
 
 export const updateProject = asyncHandler(async (req, res) => {
     const { projectId } = req.params
-    const { title, description } = req.body
+    const { name, description } = req.body
 
     if (!projectId || !isValidObjectId(projectId)) {
         throw new ApiError(400, "Invalid or missing ProjectId");
     }
 
-    if (!title || !description) {
-        throw new ApiError(400, "Title and description are required");
+    if (!name || !description) {
+        throw new ApiError(400, "name and description are required");
     }
 
     const project = await Project.findByIdAndUpdate(
         projectId,
         {
-            title,
+            name,
             description
         },
         {
@@ -69,7 +69,22 @@ export const updateProject = asyncHandler(async (req, res) => {
 })
 
 export const deleteProject = asyncHandler(async (req, res) => {
-    // have to delete all list todo comments
+    const { projectId } = req.params
+
+    if (!projectId || !isValidObjectId(projectId)) {
+        throw new ApiError(400, "ProjectId is required")
+    }
+
+    const project = await Project.findByIdAndDelete(projectId)
+
+    if (!project) {
+        throw new ApiError(400, "Invalid projectId")
+    }
+
+    res.status(200).json(
+        new ApiResponse(200, project, "Project deleted")
+    )
+
 })
 
 export const getProjectById = asyncHandler(async (req, res) => {

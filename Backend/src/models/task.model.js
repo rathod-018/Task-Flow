@@ -8,7 +8,7 @@ const taskShema = new Schema(
             ref: "Project",
             required: true
         },
-        title: {
+        name: {
             type: String,
             required: true,
             trim: true

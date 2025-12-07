@@ -95,10 +95,10 @@ function BarChart() {
         id="year-select"
         className="bg-[#1e1f22] text-white px-4 py-2 rounded-lg border border-white/10 
            focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer
-           hover:border-white/20 transition-all duration-200 absolute right-2 bottom-2 z-10"
+           hover:border-white/20 transition-all duration-200 absolute right-1 top-1 z-10"
       >
         {years.map((y) => (
-          <option key={y} value={y} onClick={() => setYear(y)}>
+          <option key={y} value={y} onClick={(e) => setYear(e.target.value)}>
             {y}
           </option>
         ))}

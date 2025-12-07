@@ -9,19 +9,35 @@ import AddMember from "../components/membership/AddMember";
 import { useUIContext } from "../context/UIContext";
 
 const Home = () => {
-  const { taskForm, boardForm, projectForm, addMemberOpen, setAddMemberOpen } =
-    useUIContext();
+  const {
+    taskForm,
+    boardForm,
+    projectForm,
+    addMemberOpen,
+    setAddMemberOpen,
+    openSideBar,
+  } = useUIContext();
   return (
     <div className="h-screen w-screen relative overflow-hidden">
       <div className="fixed top-0 left-0 w-full h-14 z-20">
         <Navbar />
       </div>
       <div className="pt-14 flex h-full">
-        <div className="fixed top-14 left-0 w-56 h-[calc(100vh-3.5rem)] z-40 border-r">
+        {/* Sidebar (left) */}
+        <div
+          className={`fixed top-14 left-0 h-[calc(100vh-3.5rem)] transition-all duration-300 z-50
+    ${openSideBar ? "md:w-56" : "hidden md:block w-14"}`}
+        >
           <Sidebar />
         </div>
-
-        <div className="ml-56 w-[calc(100%-14rem)] h-[calc(100vh-3.5rem)] overflow-auto">
+        <div
+          className={`h-[calc(100vh-3.5rem)] overflow-auto transition-all duration-300 w-full
+      ${
+        openSideBar
+          ? "md:ml-56 md:w-[calc(100%-14rem)]"
+          : "md:ml-14 md:w-[calc(100%-3.5rem)] "
+      }`}
+        >
           <Main />
         </div>
       </div>

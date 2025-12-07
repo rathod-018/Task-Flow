@@ -18,29 +18,31 @@ function SummaryStats() {
   });
 
   return (
-    <div className="flex flex-col gap-10 p-6">
+    <div className="flex flex-col gap-10 p-4 sm:p-6">
       <div className="flex flex-col lg:flex-row gap-8 w-full lg:h-[28rem]">
         <div
           className="flex-1 bg-[#18181b] border border-white/10 rounded-2xl 
-                    p-6 shadow-xl flex flex-col"
+                 p-6 shadow-xl flex flex-col min-h-[20rem]"
         >
-          <h3 className="text-white/80 text-lg font-semibold mb-4">
-            Tasks Created (By Year)
-          </h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-white/80 text-lg font-semibold">
+              Tasks Created (By Year)
+            </h3>
+          </div>
 
-          <div className="flex-1 min-h-[16rem] flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-center">
             <BarChart />
           </div>
         </div>
         <div
           className="flex-1 bg-[#18181b] border border-white/10 rounded-2xl 
-                    p-6 shadow-xl flex flex-col"
+                 p-6 shadow-xl flex flex-col min-h-[20rem]"
         >
           <h3 className="text-white/80 text-lg font-semibold mb-4">
             Tasks Status Overview
           </h3>
 
-          <div className="flex-1 min-h-[16rem] flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-center">
             <DoughnutChart />
           </div>
         </div>
@@ -48,7 +50,7 @@ function SummaryStats() {
       <div className="flex justify-center">
         <div
           className="w-full md:w-3/4 lg:w-1/2 bg-[#18181b] border border-white/10 
-                    rounded-2xl p-6 shadow-xl flex flex-col gap-6"
+                 rounded-2xl p-6 shadow-xl flex flex-col gap-6"
         >
           <h3 className="text-xl font-semibold text-white/90">
             Total Tasks:{" "}
@@ -56,48 +58,48 @@ function SummaryStats() {
               {taskData.length || 0}
             </span>
           </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+
+          <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-4 gap-4">
             <div
               className="border border-white/10 bg-[#252529] rounded-xl p-4 
-                        flex flex-col items-center justify-between hover:bg-[#2d2d30]
-                        transition cursor-default shadow-inner"
+                     flex flex-col items-center justify-between hover:bg-[#2d2d30]
+                     transition shadow-inner"
             >
               <span className="text-white/60 text-sm font-medium">Todo</span>
-              <span className="text-blue-400 text-3xl sm:text-4xl font-bold tracking-wide">
+              <span className="text-blue-400 text-3xl sm:text-4xl font-bold">
                 {todo?.length || 0}
               </span>
             </div>
-
             <div
               className="border border-white/10 bg-[#252529] rounded-xl p-4 
-                        flex flex-col items-center justify-between hover:bg-[#2d2d30]
-                        transition cursor-default shadow-inner"
+                     flex flex-col items-center justify-between hover:bg-[#2d2d30]
+                     transition shadow-inner"
             >
               <span className="text-white/60 text-sm font-medium">
                 In Progress
               </span>
-              <span className="text-yellow-400 text-3xl sm:text-4xl font-bold tracking-wide">
+              <span className="text-yellow-400 text-3xl sm:text-4xl font-bold">
                 {inProgress?.length || 0}
               </span>
             </div>
             <div
               className="border border-white/10 bg-[#252529] rounded-xl p-4 
-                        flex flex-col items-center justify-between hover:bg-[#2d2d30]
-                        transition cursor-default shadow-inner"
+                     flex flex-col items-center justify-between hover:bg-[#2d2d30]
+                     transition shadow-inner"
             >
               <span className="text-white/60 text-sm font-medium">Done</span>
-              <span className="text-green-400 text-3xl sm:text-4xl font-bold tracking-wide">
+              <span className="text-green-400 text-3xl sm:text-4xl font-bold">
                 {done?.length || 0}
               </span>
             </div>
             <div
               className="border border-white/10 bg-[#252529] rounded-xl p-4 
-                        flex flex-col items-center justify-between hover:bg-[#2d2d30]
-                        transition cursor-default shadow-inner"
+                     flex flex-col items-center justify-between hover:bg-[#2d2d30]
+                     transition shadow-inner"
             >
               <span className="text-white/60 text-sm font-medium">Overdue</span>
-              <span className="text-red-500 text-3xl sm:text-4xl font-bold tracking-wide">
-                {Overdue.length || 0}
+              <span className="text-red-500 text-3xl sm:text-4xl font-bold">
+                {Overdue?.length || 0}
               </span>
             </div>
           </div>

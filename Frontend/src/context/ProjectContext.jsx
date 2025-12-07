@@ -1,7 +1,7 @@
 import React, { useContext, createContext, useState, useEffect } from "react";
 import { useUserContext } from "./UserContext";
+import { usePageHistory } from "../hooks/usePageHisrory";
 import api from "../api/axios";
-import { toast } from "react-toastify";
 
 const ProjectContext = createContext();
 
@@ -10,11 +10,11 @@ export function ProjectContextProvider({ children }) {
   const [projectList, setProjectList] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const { updateLastOpened } = usePageHistory();
   const boardId = user?.userPageHistory?.boardId;
   const projectId = user?.userPageHistory?.projectId;
 
-  const fetchAllProjects = async () => {
+  async function fetchAllProjects() {
     if (!boardId) return;
 
     try {
@@ -26,18 +26,20 @@ export function ProjectContextProvider({ children }) {
 
       if (projects.length > 0 && !projectId) {
         setSelectedProject(projects[0]);
+        updateLastOpened(boardId, projects[0]._id);
+        fetchSelectedProject();
       }
       if (projects.length === 0) {
         setSelectedProject(null);
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || "Something went wrong");
+      console.error(err);
     } finally {
       setLoading(false);
     }
-  };
+  }
 
-  const fetchSelectedProject = async () => {
+  async function fetchSelectedProject() {
     if (!projectId) return;
 
     try {
@@ -48,30 +50,31 @@ export function ProjectContextProvider({ children }) {
         setSelectedProject(data.data);
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || "Something went wrong");
+      console.error(err);
       setSelectedProject(null);
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   useEffect(() => {
     fetchAllProjects();
-  }, [boardId]);
+  }, [boardId, user]);
 
   useEffect(() => {
     fetchSelectedProject();
-  }, [projectId]);
-
-  // if (loading)
-  //   return (
-  //     <div className="w-screen h-screen flex justify-center items-center">
-  //       Loading...
-  //     </div>
-  //   );
+  }, [projectId, user]);
 
   return (
-    <ProjectContext.Provider value={{ selectedProject, projectList, loading }}>
+    <ProjectContext.Provider
+      value={{
+        selectedProject,
+        projectList,
+        loading,
+        fetchAllProjects,
+        setSelectedProject,
+      }}
+    >
       {children}
     </ProjectContext.Provider>
   );

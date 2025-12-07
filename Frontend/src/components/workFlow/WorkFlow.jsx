@@ -8,10 +8,23 @@ function WorkFlow() {
   const done = useFetchTaskByStatus("done");
 
   return (
-    <div className="flex justify-evenly mt-10">
-      <WorkFlowCard type="To do" tasks={todo} />
-      <WorkFlowCard type="In progress" tasks={inProgress} />
-      <WorkFlowCard type="Done" tasks={done} />
+    <div className="w-full flex justify-center items-center px-4">
+      <div
+        className="flex flex-col gap-8 md:flex-row md:gap-14 justify-center  md:max-w-[80rem] w-full
+    "
+      >
+        <div className="w-full md:w-1/3">
+          <WorkFlowCard type="To do" tasks={todo} />
+        </div>
+
+        <div className="w-full md:w-1/3">
+          <WorkFlowCard type="In progress" tasks={inProgress} />
+        </div>
+
+        <div className="w-full md:w-1/3">
+          <WorkFlowCard type="Done" tasks={done} />
+        </div>
+      </div>
     </div>
   );
 }

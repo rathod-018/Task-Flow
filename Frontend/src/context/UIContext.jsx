@@ -18,6 +18,7 @@ export function UIContextProvider({ children }) {
     data: null,
   });
   const [addMemberOpen, setAddMemberOpen] = useState(false);
+  const [openSideBar, setOpenSideBar] = useState(true);
 
   const openForm = (setter, mode = "create", data = null) =>
     setter({ open: true, mode, data });
@@ -50,6 +51,8 @@ export function UIContextProvider({ children }) {
         closeProjectForm,
         addMemberOpen,
         setAddMemberOpen,
+        openSideBar,
+        setOpenSideBar,
       }}
     >
       {children}

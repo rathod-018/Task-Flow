@@ -4,7 +4,6 @@ import { toast } from "react-toastify"
 import api from "../api/axios"
 
 
-
 export const useMembersByStatus = (status) => {
     const { user } = useUserContext()
     const [data, setData] = useState([])
@@ -19,7 +18,8 @@ export const useMembersByStatus = (status) => {
             })
             setData(data.data)
 
-        } catch (error) {
+        } catch (err) {
+            console.log(err)
             toast.error("Failed to load members")
         }
     }

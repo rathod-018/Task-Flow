@@ -10,14 +10,14 @@ const BoardForm = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [title, setTitle] = useState("");
+  const [boardName, setBoardName] = useState("");
   const [description, setDescription] = useState("");
 
   const cardRef = useRef();
-  // console.log(cardRef.current)
+  
 
   const createBoard = async () => {
-    if (!title) {
+    if (!boardName) {
       setError("Board name is required");
       return;
     }
@@ -28,7 +28,10 @@ const BoardForm = () => {
 
     try {
       setLoading(true);
-      const { data } = await api.post("/board/create", { title, description });
+      const { data } = await api.post("/board/create", {
+        name: boardName,
+        description,
+      });
       const boardId = data.data._id;
       updateLastOpened(boardId);
       console.log(data);
@@ -62,17 +65,17 @@ const BoardForm = () => {
     <div
       onClick={(e) => e.stopPropagation()}
       ref={cardRef}
-      className="w-[45rem] h-[30rem] bg-[#18181b] rounded-xl shadow-2xl p-6 space-y-5 border border-[#2a2a2d]"
+      className="m-10 w-full md:w-[45rem] bg-[#18181b] rounded-xl shadow-2xl p-6 space-y-5 border border-[#2a2a2d]"
     >
       <h2 className="text-2xl font-semibold text-gray-200">Create New Board</h2>
       <div className="flex flex-col space-y-1">
-        <label className="text-sm font-medium text-gray-300">Title</label>
+        <label className="text-sm font-medium text-gray-300">Name</label>
         <input
           type="text"
-          placeholder="Enter board title"
+          placeholder="Enter board name"
           className="bg-[#232327] text-gray-200 border border-[#3a3a3e] rounded-lg px-3 py-2 
                  outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) => setBoardName(e.target.value)}
           disabled={loading}
         />
       </div>

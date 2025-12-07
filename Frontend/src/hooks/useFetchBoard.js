@@ -8,13 +8,10 @@ export const useFetchBoard = (url) => {
     const [error, setError] = useState(null)
     const { user } = useUserContext()
 
-
-
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const { data } = await api.get(url)
-                // console.log(data)
                 setData(data?.data)
 
             } catch (error) {

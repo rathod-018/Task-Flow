@@ -47,7 +47,7 @@ function WorkFlowCard({ type, tasks = [] }) {
   };
 
   return (
-    <div className="w-80 h-fit min-h-40 rounded-lg bg-[#1d1d1f] border border-[#2a2a2d] flex flex-col relative">
+    <div className="h-fit min-h-40  rounded-lg bg-[#1d1d1f] border border-[#2a2a2d] flex flex-col relative">
       <div className="flex justify-between items-center px-4 py-3 border-b border-[#2a2a2d]">
         <p className="text-base font-medium text-gray-300">{type}</p>
         <span className="text-xs text-gray-400">{tasks.length}</span>
@@ -66,7 +66,7 @@ function WorkFlowCard({ type, tasks = [] }) {
               }}
             >
               <span className="text-sm text-gray-300 truncate w-36">
-                {task.title}
+                {task.name}
               </span>
 
               <div className="flex items-center gap-2">

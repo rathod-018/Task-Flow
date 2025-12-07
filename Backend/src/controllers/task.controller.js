@@ -8,9 +8,9 @@ import { isValidObjectId } from "mongoose"
 
 
 export const createTask = asyncHandler(async (req, res) => {
-    const { title, description, date, projectId, assigneeId } = req.body
+    const { name, description, date, projectId, assigneeId } = req.body
 
-    if ([title, description].some((item) => !item || item.trim() === "")) {
+    if ([name, description].some((item) => !item || item.trim() === "")) {
         throw new ApiError(400, "all fields are required")
     }
 
@@ -33,7 +33,7 @@ export const createTask = asyncHandler(async (req, res) => {
 
     const task = await Task.create(
         {
-            title,
+            name,
             description,
             dueDate: new Date(date) || null,
             projectId: project?._id,
@@ -97,13 +97,13 @@ export const updateTaskStatus = asyncHandler(async (req, res) => {
 
 export const updateTask = asyncHandler(async (req, res) => {
     const { taskId } = req.params
-    const { title, description, date, assigneeId } = req.body
+    const { name, description, date, assigneeId } = req.body
 
     if (!taskId || !isValidObjectId(taskId)) {
         throw new ApiError(400, "Invalid TaskId")
     }
 
-    if ([title, description, date].some((ele) => !ele || ele.trim() === "")) {
+    if ([name, description, date].some((ele) => !ele || ele.trim() === "")) {
         throw new ApiError(400, "All fields are required")
     }
     let assignee;
@@ -115,7 +115,7 @@ export const updateTask = asyncHandler(async (req, res) => {
     }
 
     const task = await Task.findByIdAndUpdate(taskId, {
-        title,
+        name,
         description,
         dueDate: new Date(date) || null,
         assigneeId: assignee?._id || null

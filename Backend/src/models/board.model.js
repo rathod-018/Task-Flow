@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 const boardSchema = new Schema(
     {
-        title: {
+        name: {
             type: String,
             required: true,
             trim: true

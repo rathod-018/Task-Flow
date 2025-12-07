@@ -15,7 +15,6 @@ function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // original logic preserved
     setError("");
     if (!name) {
       setError("Please enter name");
@@ -58,7 +57,7 @@ function SignUp() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-neutral-900 to-slate-900 px-4">
+    <div className="min-h-screen  flex items-center justify-center bg-gradient-to-br from-neutral-900 to-slate-900 px-4">
       <div className="w-full max-w-lg bg-[#0f1720] border border-[#20232a] rounded-2xl p-8 shadow-lg">
         <div className="mb-6 text-center">
           <h2 className="text-2xl font-semibold text-white">

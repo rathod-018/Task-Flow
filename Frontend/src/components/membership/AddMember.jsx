@@ -33,23 +33,29 @@ function AddMember() {
 
   return (
     <div
-      className=" bg-[#18181b] w-full md:w-[60rem] p-5 rounded-xl max-h-[80vh] min-h-80 flex flex-col overflow-hidden mt-16"
+      className="bg-[#1c1c20] w-full md:w-[60rem] p-6 rounded-2xl max-h-[85vh] min-h-80 flex flex-col overflow-hidden mt-16 mx-10 shadow-xl border border-white/10"
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="pb-4 mt-3 mx-5 ">
+      <div className="pb-4 mt-2 mx-2">
         <input
           type="search"
           placeholder="Search user by username or email"
-          className="bg-[#232327] w-full px-5 py-3 rounded-lg text-gray-200 outline-none focus:ring-2 focus:ring-blue-500"
+          className="bg-[#232327] w-full px-5 py-3 rounded-xl text-gray-200 outline-none border border-white/10 focus:ring-2 focus:ring-blue-500 transition-all"
           onChange={(e) => setText(e.target.value)}
         />
       </div>
-      <div className="grid md:grid-cols-2 grid-cols-1 overflow-y-auto  max-h-[calc(100%-5rem)] pr-2 custom-scroll">
-        {results
-          ?.filter((result) => result._id !== user?._id)
-          .map((result) => (
-            <Card result={result} members={members} key={result?._id} />
-          ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 overflow-y-auto pr-3 custom-scroll max-h-[calc(100%-6rem)]">
+        {results.length > 0 ? (
+          results
+            .filter((result) => result._id !== user?._id)
+            .map((result) => (
+              <Card result={result} members={members} key={result?._id} />
+            ))
+        ) : (
+          <div className="col-span-full text-center text-gray-400 mt-10">
+            User not found
+          </div>
+        )}
       </div>
     </div>
   );
