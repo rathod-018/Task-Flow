@@ -1,4 +1,10 @@
-import React, { useContext, createContext, useState, useEffect } from "react";
+import React, {
+  useContext,
+  createContext,
+  useState,
+  useEffect,
+  useMemo,
+} from "react";
 import { useUserContext } from "./UserContext";
 import { usePageHistory } from "../hooks/usePageHisrory";
 import api from "../api/axios";
@@ -9,8 +15,9 @@ export function ProjectContextProvider({ children }) {
   const { user } = useUserContext();
   const [projectList, setProjectList] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { updateLastOpened } = usePageHistory();
+
   const boardId = user?.userPageHistory?.boardId;
   const projectId = user?.userPageHistory?.projectId;
 
@@ -20,15 +27,16 @@ export function ProjectContextProvider({ children }) {
     try {
       setLoading(true);
       const { data } = await api.get(`/project/all/${boardId}`);
-
       const projects = data.data || [];
+
       setProjectList(projects);
 
       if (projects.length > 0 && !projectId) {
-        setSelectedProject(projects[0]);
-        updateLastOpened(boardId, projects[0]._id);
-        fetchSelectedProject();
+        const first = projects[0];
+        setSelectedProject(first);
+        updateLastOpened(boardId, first._id);
       }
+
       if (projects.length === 0) {
         setSelectedProject(null);
       }
@@ -59,24 +67,25 @@ export function ProjectContextProvider({ children }) {
 
   useEffect(() => {
     fetchAllProjects();
-  }, [boardId, user]);
+  }, [boardId]);
 
   useEffect(() => {
     fetchSelectedProject();
-  }, [projectId, user]);
+  }, [projectId]);
+
+  const value = useMemo(
+    () => ({
+      selectedProject,
+      projectList,
+      fetchAllProjects,
+      setSelectedProject,
+      loading,
+    }),
+    [selectedProject, projectList, loading]
+  );
 
   return (
-    <ProjectContext.Provider
-      value={{
-        selectedProject,
-        projectList,
-        loading,
-        fetchAllProjects,
-        setSelectedProject,
-      }}
-    >
-      {children}
-    </ProjectContext.Provider>
+    <ProjectContext.Provider value={value}>{children}</ProjectContext.Provider>
   );
 }
 

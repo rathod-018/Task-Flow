@@ -5,7 +5,8 @@ import {
     deleteBoard,
     getBoardById,
     getCreatedBoards,
-    getJoinedBoard
+    getJoinedBoard,
+    updateBoard
 } from "../controllers/board.controller.js";
 
 const router = Router()
@@ -14,7 +15,8 @@ router.use(verifyUser)
 router.route("/create").post(createBoard)
 router.route("/created").get(getCreatedBoards)
 router.route("/joined").get(getJoinedBoard)
-router.route("/delete").delete(deleteBoard)
+router.route("/:boardId").delete(deleteBoard)
 router.route("/:boardId").get(getBoardById)
+router.route("/:boardId").patch(updateBoard)
 
 export default router;

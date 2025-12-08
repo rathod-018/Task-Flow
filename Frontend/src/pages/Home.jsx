@@ -23,7 +23,6 @@ const Home = () => {
         <Navbar />
       </div>
       <div className="pt-14 flex h-full">
-        {/* Sidebar (left) */}
         <div
           className={`fixed top-14 left-0 h-[calc(100vh-3.5rem)] transition-all duration-300 z-50
     ${openSideBar ? "md:w-56" : "hidden md:block w-14"}`}
@@ -31,7 +30,7 @@ const Home = () => {
           <Sidebar />
         </div>
         <div
-          className={`h-[calc(100vh-3.5rem)] overflow-auto transition-all duration-300 w-full
+          className={`h-[calc(100vh-3.5rem)] overflow-auto transition-all duration-300
       ${
         openSideBar
           ? "md:ml-56 md:w-[calc(100%-14rem)]"

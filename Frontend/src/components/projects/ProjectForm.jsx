@@ -50,9 +50,6 @@ function ProjectForm() {
         res = data;
       }
 
-      console.log(res);
-      console.log(projectForm);
-
       if (res.statusCode === 201) {
         toast.success("Project created");
         updateLastOpened(boardId, res.data?._id);

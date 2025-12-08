@@ -2,26 +2,25 @@ import React, { useEffect, useState } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 import BoardCard from "./board/BoardCard";
 import { useProjectContext } from "../context/ProjectContext";
-import { useUserContext } from "../context/UserContext";
 import angleDown from "../assets/angle-down.svg";
 import angleRight from "../assets/angle-right.svg";
 import notebook from "../assets/notebook.svg";
 import { useUIContext } from "../context/UIContext";
+import { useBoardContext } from "../context/BoardContext";
 
 function Main() {
+  const { activeBoardId } = useBoardContext();
   const { selectedProject } = useProjectContext();
   const [isOpen, setIsOpen] = useState(false);
   const [project, setProject] = useState(null);
-  const { user } = useUserContext();
-  const selectedBoard = user?.userPageHistory?.boardId;
-  const { setIsCreateBoardCardOpen } = useUIContext();
+  const { openBoardForm } = useUIContext();
 
   useEffect(() => {
     setProject(selectedProject);
   }, [selectedProject]);
   return (
     <div className="w-full h-full flex justify-center items-center overflow-hidden bg-gradient-to-br from-[#0a0a0b] to-[#121214]">
-      {selectedBoard ? (
+      {activeBoardId ? (
         <div className="flex flex-col w-full h-full max-w-[110rem] mx-auto text-gray-200">
           <div className="px-10 py-4 flex flex-col md:gap-6 ">
             <div className="flex flex-col md:flex-row  items-center gap-4">
@@ -131,7 +130,7 @@ function Main() {
           </p>
           <button
             className="mt-4 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/25 transition-all duration-200 hover:scale-105"
-            onClick={() => setIsCreateBoardCardOpen(true)}
+            onClick={() => openBoardForm()}
           >
             Create Board
           </button>

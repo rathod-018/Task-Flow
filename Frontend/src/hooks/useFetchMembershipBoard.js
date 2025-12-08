@@ -20,7 +20,6 @@ export const useMembersByStatus = (status) => {
 
         } catch (err) {
             console.log(err)
-            toast.error("Failed to load members")
         }
     }
 

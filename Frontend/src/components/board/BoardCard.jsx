@@ -1,59 +1,138 @@
 import React, { useEffect, useState } from "react";
-import { useFetchBoard } from "../../hooks/useFetchBoard";
 import { usePageHistory } from "../../hooks/usePageHisrory";
+import { useUIContext } from "../../context/UIContext";
+import { useUserContext } from "../../context/UserContext";
+import { useBoardContext } from "../../context/BoardContext";
+
+import menuDots from "../../assets/menu-dots.svg";
+import eye from "../../assets/eye.svg";
+import edit from "../../assets/edit.svg";
 
 function BoardCard() {
+  const { user } = useUserContext();
   const { updateLastOpened } = usePageHistory();
-  const [created, setCreated] = useState(null);
-  const [joined, setJoined] = useState(null);
+  const { openBoardForm } = useUIContext();
 
-  const {
-    data: createdData,
-    loading: createdLoading,
-    error: createdError,
-  } = useFetchBoard("/board/created");
+  const { createdBoards, joinedBoards, error } = useBoardContext();
 
-  const {
-    data: joinedData,
-    loading: joinedLoading,
-    error: joinedError,
-  } = useFetchBoard("/board/joined");
+  const [openMenu, setOpenMenu] = useState(null);
 
+  // Close menu on outside click
   useEffect(() => {
-    setCreated(createdData);
-  }, [createdData]);
-
-  useEffect(() => {
-    setJoined(joinedData);
-  }, [joinedData]);
+    const close = () => setOpenMenu(null);
+    window.addEventListener("click", close);
+    return () => window.removeEventListener("click", close);
+  }, []);
 
   return (
     <div
-      className="border border-white/10 rounded-xl bg-[#0f0f11]/90 backdrop-blur-xl 
-      text-gray-200 max-h-[calc(100vh-20rem)] flex flex-col shadow-xl shadow-black/40"
+      className="border border-white/10 rounded-xl bg-[#0f0f11]/90 
+      backdrop-blur-xl text-gray-200 max-h-[calc(100vh-20rem)] 
+      flex flex-col shadow-xl shadow-black/40"
     >
+      {/* Created Boards Title */}
       <div className="p-4 border-b border-white/10 flex-shrink-0">
         <h2 className="text-base font-semibold tracking-wide">
           Created Boards
         </h2>
       </div>
 
-      <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-6">
-        {createdError && (
-          <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 text-red-400 text-sm">
-            {createdError}
+      <div className="flex-1 overflow-visible p-4 space-y-6">
+        {/* UNIVERSAL ERROR */}
+        {error && (
+          <div className="bg-red-500/10 border border-red-500/20 p-3 rounded-lg text-red-400 text-sm">
+            {error}
           </div>
         )}
-        {createdLoading ? (
-          <div className="text-gray-400 animate-pulse">Loading...</div>
-        ) : created && created.length > 0 ? (
+
+        {/* CREATED BOARDS */}
+        {createdBoards.length > 0 ? (
           <div className="space-y-3">
-            {created.map((board) => (
+            {createdBoards.map((board) => (
               <div
                 key={board._id}
-                className="flex items-center justify-between bg-[#141417] 
+                className="relative flex items-center justify-between bg-[#141417] 
                 border border-white/10 rounded-lg px-4 py-3 
-                hover:border-blue-500/40 transition-all duration-200"
+                hover:border-blue-500/40 transition-all"
+              >
+                {/* Info */}
+                <div>
+                  <h3 className="font-semibold text-white text-sm">
+                    {board.name}
+                  </h3>
+                  <p className="text-gray-400 text-xs line-clamp-1">
+                    {board.description}
+                  </p>
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => updateLastOpened(board._id)}
+                    className="px-3 py-1.5 text-xs rounded-md bg-blue-600 
+                    hover:bg-blue-700 text-white"
+                  >
+                    Switch
+                  </button>
+
+                  <img
+                    src={menuDots}
+                    className="w-4 invert opacity-80 cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (user?._id === board.ownerId)
+                        setOpenMenu(openMenu === board._id ? null : board._id);
+                    }}
+                  />
+                </div>
+
+                {/* Menu */}
+                {openMenu === board._id && (
+                  <div
+                    className="absolute right-[-4rem] top-[3rem] md:right-[-9rem] md:top-0 
+                    bg-[#161b22] w-32 py-2 rounded-md border border-white/10 
+                    shadow-xl z-50"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button
+                      className="flex items-center gap-2 px-3 py-1.5 
+                      hover:bg-white/10 text-gray-300 w-full text-sm"
+                      onClick={() => openBoardForm("read", board)}
+                    >
+                      <img src={eye} className="w-4 invert" /> View
+                    </button>
+
+                    <button
+                      className="flex items-center gap-2 px-3 py-1.5 
+                      hover:bg-white/10 text-gray-300 w-full text-sm"
+                      onClick={() => openBoardForm("edit", board)}
+                    >
+                      <img src={edit} className="w-4 invert" /> Edit
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center text-gray-500 py-6">
+            No created boards yet
+          </div>
+        )}
+
+        <hr className="my-4 border-white/10" />
+
+        {/* JOINED BOARDS */}
+        <h2 className="text-base font-semibold mb-3">Joined Boards</h2>
+
+        {joinedBoards.length > 0 ? (
+          <div className="space-y-3">
+            {joinedBoards.map((board) => (
+              <div
+                key={board._id}
+                className="relative flex items-center justify-between bg-[#141417] 
+                border border-white/10 rounded-lg px-4 py-3 
+                hover:border-blue-500/40 transition-all"
               >
                 <div>
                   <h3 className="font-semibold text-white text-sm">
@@ -64,66 +143,57 @@ function BoardCard() {
                   </p>
                 </div>
 
-                <button
-                  onClick={() => updateLastOpened(board._id)}
-                  className="px-3 py-1.5 text-xs rounded-md bg-blue-600 
-                  hover:bg-blue-700 text-white font-medium shadow-sm"
-                >
-                  Switch
-                </button>
-              </div>
-            ))}
-          </div>
-        ) : !createdError ? (
-          <div className="flex items-center justify-center py-12">
-            <p className="text-gray-500 text-sm">No created boards yet</p>
-          </div>
-        ) : null}
-
-        <hr className="my-4 border-white/10" />
-        <div>
-          <h2 className="text-base font-semibold mb-3">Joined Boards</h2>
-          {joinedError && (
-            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 text-red-400 text-sm mb-3">
-              {joinedError}
-            </div>
-          )}
-          {joinedLoading ? (
-            <div className="text-gray-400 animate-pulse">Loading...</div>
-          ) : joined && joined.length > 0 ? (
-            <div className="space-y-3">
-              {joined.map((board) => (
-                <div
-                  key={board._id}
-                  className="flex items-center justify-between bg-[#141417] 
-                  border border-white/10 rounded-lg px-4 py-3 
-                  hover:border-blue-500/40 transition-all duration-200"
-                >
-                  <div>
-                    <h3 className="font-semibold text-white text-sm">
-                      {board.name}
-                    </h3>
-                    <p className="text-gray-400 text-xs line-clamp-1">
-                      {board.description}
-                    </p>
-                  </div>
-
+                <div className="flex items-center gap-3">
                   <button
                     onClick={() => updateLastOpened(board._id)}
                     className="px-3 py-1.5 text-xs rounded-md bg-blue-600 
-                    hover:bg-blue-700 text-white font-medium shadow-sm"
+                    hover:bg-blue-700 text-white"
                   >
                     Switch
                   </button>
+
+                  <img
+                    src={menuDots}
+                    className="w-4 invert opacity-80 cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (user?._id === board.ownerId)
+                        setOpenMenu(openMenu === board._id ? null : board._id);
+                    }}
+                  />
                 </div>
-              ))}
-            </div>
-          ) : !joinedError ? (
-            <div className="flex items-center justify-center py-10">
-              <p className="text-gray-500 text-sm">No joined boards yet</p>
-            </div>
-          ) : null}
-        </div>
+
+                {openMenu === board._id && (
+                  <div
+                    className="absolute right-[-9rem] top-0 bg-[#161b22] 
+                    w-32 py-2 rounded-md border border-white/10 shadow-xl z-50"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button
+                      className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/10 
+                      text-gray-300 w-full text-sm"
+                      onClick={() => openBoardForm("read", board)}
+                    >
+                      <img src={eye} className="w-4 invert" /> View
+                    </button>
+
+                    <button
+                      className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/10 
+                      text-gray-300 w-full text-sm"
+                      onClick={() => openBoardForm("edit", board)}
+                    >
+                      <img src={edit} className="w-4 invert" /> Edit
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center text-gray-500 py-6">
+            No joined boards yet
+          </div>
+        )}
       </div>
     </div>
   );

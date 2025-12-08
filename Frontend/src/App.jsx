@@ -10,6 +10,7 @@ import List from "./components/list/List";
 import Summary from "./components/summary/Summary";
 import { ProjectContextProvider } from "./context/ProjectContext";
 import { TaskContextProvider } from "./context/TaskContext";
+import { BoardContextProvider } from "./context/BoardContext";
 
 function App() {
   return (
@@ -23,11 +24,13 @@ function App() {
         <Route
           path="/home"
           element={
-            <ProjectContextProvider>
-              <TaskContextProvider>
-                <Home />
-              </TaskContextProvider>
-            </ProjectContextProvider>
+            <BoardContextProvider>
+              <ProjectContextProvider>
+                <TaskContextProvider>
+                  <Home />
+                </TaskContextProvider>
+              </ProjectContextProvider>
+            </BoardContextProvider>
           }
         >
           <Route path="work-flow" index element={<WorkFlow />} />

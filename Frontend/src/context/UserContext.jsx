@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import api from "../api/axios";
-import { createContext } from "react";
+import Loader from "../components/Loader";
 
-const UserContext = createContext();
+const UserContext = React.createContext();
 
 export function UserContextProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -12,18 +12,16 @@ export function UserContextProvider({ children }) {
   const getUser = async () => {
     try {
       const { data } = await api.get("/user/get-user");
+
       if (data.success) {
-        // console.log(data);
         setUser(data.data);
       } else {
         setUser(null);
       }
-      // console.log("context:", data);
     } catch (error) {
       console.log(error);
       setUser(null);
     } finally {
-      // console.log("running....");
       setLoading(false);
     }
   };
@@ -32,22 +30,26 @@ export function UserContextProvider({ children }) {
     getUser();
   }, []);
 
+  const value = useMemo(
+    () => ({
+      user,
+      setUser,
+      loading,
+      userEmail,
+      setUserEmail,
+      getUser,
+    }),
+    [user, loading, userEmail]
+  );
+
   if (loading)
     return (
       <div className="w-screen h-screen flex justify-center items-center">
-        Loading...
+        <Loader />
       </div>
     );
 
-  return (
-    <UserContext.Provider
-      value={{ user, setUser, loading, userEmail, setUserEmail, getUser }}
-    >
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 }
 
-export const useUserContext = () => {
-  return useContext(UserContext);
-};
+export const useUserContext = () => useContext(UserContext);
