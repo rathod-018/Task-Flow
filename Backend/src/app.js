@@ -4,7 +4,7 @@ import cors from "cors"
 
 const app = express()
 
-
+dbConnection()
 
 app.use(express.json())
 app.use(express.static("public"))
@@ -26,6 +26,7 @@ import boardRoutes from "./routes/board.route.js"
 import projectRoutes from "./routes/projects.route.js"
 import boardMembershipRoutes from "./routes/boardMembership.route.js"
 import taskRouter from "./routes/task.route.js"
+import { dbConnection } from "./db/db.js"
 
 
 app.use("/api/v1/user", userRoutes)
@@ -49,4 +50,4 @@ app.use((err, req, res, next) => {
 
 
 
-export { app }
+export default app 
