@@ -18,7 +18,9 @@ export function UIContextProvider({ children }) {
     data: null,
   });
   const [addMemberOpen, setAddMemberOpen] = useState(false);
-  const [openSideBar, setOpenSideBar] = useState(false);
+  const [openSideBar, setOpenSideBar] = useState(
+    () => window.innerWidth >= 768
+  );
   const [loading, setLoading] = useState(false);
 
   const openForm = (setter, mode = "create", data = null) =>

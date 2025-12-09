@@ -19,7 +19,7 @@ export function UserContextProvider({ children }) {
         setUser(null);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setUser(null);
     } finally {
       setLoading(false);

@@ -42,7 +42,6 @@ function LogIn() {
         error?.message ||
         "Something went wrong";
       setError(msg);
-      console.log(error);
       return;
     } finally {
       setLoading(false);

@@ -7,14 +7,20 @@ import { useUIContext } from "../../context/UIContext";
 import api from "../../api/axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import AcceptMembership from "../membership/AcceptMembership";
+import { useFetchReqBoards } from "../../hooks/useFetchReqBoards";
 
 function Navbar() {
   const { setAddMemberOpen, setOpenSideBar } = useUIContext();
-  const { user } = useUserContext();
+  const { user, setUser } = useUserContext();
   const avatarUrl = user?.avatar.url;
+  const { boardData, fetchReqBoards } = useFetchReqBoards();
   const [logout, setLogout] = useState(false);
   const [notification, setNotification] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(null);
+
   const navigate = useNavigate();
+
   const logoutRef = useRef();
   const notificationRef = useRef();
 
@@ -23,12 +29,18 @@ function Navbar() {
       const { data } = await api.patch("/user/logout");
       if (data?.statusCode === 200) {
         toast.success(data.message);
+        setUser(null);
         navigate("/");
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
+
+  // update notification count
+  useEffect(() => {
+    setNotificationCount(boardData.length);
+  }, [boardData]);
 
   // close dropdown
   useEffect(() => {
@@ -53,6 +65,7 @@ function Navbar() {
       <div className="flex items-center gap-2 relative">
         <img
           src={menuBurger}
+          alt="menu-burger"
           onClick={() => setOpenSideBar((prev) => !prev)}
           className="w-6 invert opacity-80 hover:opacity-100 transition cursor-pointer"
         />
@@ -66,21 +79,28 @@ function Navbar() {
           className="w-6 invert opacity-80 hover:opacity-100 transition cursor-pointer"
           onClick={() => setAddMemberOpen(true)}
         />
-        <img
-          src={bellIcon}
-          alt="bell"
-          onClick={(e) => {
-            e.stopPropagation();
-            setNotification((p) => !p);
-          }}
-          className="w-6 invert opacity-80 hover:opacity-100 transition cursor-pointer"
-        />
+        <div className="relative">
+          <img
+            src={bellIcon}
+            alt="bell"
+            onClick={(e) => {
+              e.stopPropagation();
+              setNotification((p) => !p);
+            }}
+            className="w-6 invert opacity-80 hover:opacity-100 transition cursor-pointer"
+          />
+          {notificationCount > 0 && (
+            <div className="absolute -top-1.5 -right-1 text-[9px] bg-red-600 py-0.5 px-1.5 rounded-full">
+              {notificationCount}
+            </div>
+          )}
+        </div>
         {notification && (
           <div
             ref={notificationRef}
-            className="absolute right-20 top-16 bg-[#161b22] border border-[#30363d] rounded-xl w-64 shadow-2xl p-3 z-50"
+            className="absolute right-3 top-16 bg-[#161b22] border border-[#30363d] rounded-xl w-80 shadow-2xl p-1.5 z-50"
           >
-            <p className="text-sm text-gray-300">Notification content...</p>
+            <AcceptMembership data={boardData} refresh={fetchReqBoards} />
           </div>
         )}
         <img

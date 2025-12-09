@@ -126,7 +126,7 @@ export const getCreatedBoards = asyncHandler(async (req, res) => {
 
 
 export const getJoinedBoard = asyncHandler(async (req, res) => {
-    const joined = await BoardMembership.find({ userId: req.user?._id }).select("boardId")
+    const joined = await BoardMembership.find({ userId: req.user?._id, inviteStatus: "accepted" }).select("boardId")
 
     const joinedIds = joined.map(j => j.boardId)
 

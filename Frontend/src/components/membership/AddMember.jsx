@@ -18,7 +18,7 @@ function AddMember() {
       const { data } = await api.get(`/board-member/search?q=${text}`);
       setResult(data?.data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

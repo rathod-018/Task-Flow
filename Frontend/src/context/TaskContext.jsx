@@ -2,7 +2,6 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { useProjectContext } from "./ProjectContext";
 import api from "../api/axios";
 import { toast } from "react-toastify";
-import Loader from "../components/Loader";
 
 const TaskContext = createContext();
 
@@ -13,6 +12,7 @@ export function TaskContextProvider({ children }) {
   const projectId = selectedProject?._id;
 
   const fetchTasks = async () => {
+    if (!projectId) return;
     try {
       setLoading(true);
       const { data } = await api.get(`/task/all/${projectId}`);
@@ -20,7 +20,7 @@ export function TaskContextProvider({ children }) {
         setTaskData(data.data);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       toast.error("Error while fetching task");
     } finally {
       setLoading(false);
@@ -28,18 +28,15 @@ export function TaskContextProvider({ children }) {
   };
 
   useEffect(() => {
-    if (!projectId) return;
+    if (!projectId) return setTaskData([]);
     fetchTasks();
   }, [projectId]);
 
-
   return (
-    <TaskContext.Provider value={{ taskData, fetchTasks }}>
+    <TaskContext.Provider value={{ taskData, fetchTasks, loading }}>
       {children}
     </TaskContext.Provider>
   );
 }
 
 export const useTaskContext = () => useContext(TaskContext);
-
-// add this context rather than custom hook

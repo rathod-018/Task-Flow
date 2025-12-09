@@ -5,7 +5,8 @@ import {
     verifyOtp,
     logOutUser,
     getCurrentUser,
-    updatePageHistory
+    updatePageHistory,
+    resendOtp
 } from '../controllers/user.controller.js'
 import { verifyUser } from '../middleware/userAuth.middleware.js'
 
@@ -15,7 +16,7 @@ const router = Router()
 router.route("/register").post(registerUser)
 router.route("/login").post(loginUser)
 router.route("/verify-otp").post(verifyOtp)
-router.use(verifyUser)
+router.route("/resend-otp").post(resendOtp)
 
 
 //protected route

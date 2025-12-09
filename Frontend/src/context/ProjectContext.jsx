@@ -8,6 +8,7 @@ import React, {
 import { useUserContext } from "./UserContext";
 import { usePageHistory } from "../hooks/usePageHisrory";
 import api from "../api/axios";
+import { useBoardContext } from "./BoardContext";
 
 const ProjectContext = createContext();
 
@@ -17,16 +18,16 @@ export function ProjectContextProvider({ children }) {
   const [selectedProject, setSelectedProject] = useState(null);
   const [loading, setLoading] = useState(false);
   const { updateLastOpened } = usePageHistory();
+  const { activeBoardId } = useBoardContext();
 
-  const boardId = user?.userPageHistory?.boardId;
   const projectId = user?.userPageHistory?.projectId;
 
   async function fetchAllProjects() {
-    if (!boardId) return;
+    if (!activeBoardId) return;
 
     try {
       setLoading(true);
-      const { data } = await api.get(`/project/all/${boardId}`);
+      const { data } = await api.get(`/project/all/${activeBoardId}`);
       const projects = data.data || [];
 
       setProjectList(projects);
@@ -34,7 +35,7 @@ export function ProjectContextProvider({ children }) {
       if (projects.length > 0 && !projectId) {
         const first = projects[0];
         setSelectedProject(first);
-        updateLastOpened(boardId, first._id);
+        updateLastOpened(activeBoardId, first._id);
       }
 
       if (projects.length === 0) {
@@ -67,11 +68,11 @@ export function ProjectContextProvider({ children }) {
 
   useEffect(() => {
     fetchAllProjects();
-  }, [boardId]);
+  }, [activeBoardId]);
 
   useEffect(() => {
     fetchSelectedProject();
-  }, [projectId]);
+  }, [projectId, activeBoardId]);
 
   const value = useMemo(
     () => ({

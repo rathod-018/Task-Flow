@@ -111,33 +111,25 @@ const verifyOtp = asyncHandler(async (req, res) => {
     if (!otp) {
         throw new ApiError(400, "Otp is required")
     }
-
     if (!email) {
         throw new ApiError(400, "Email is required")
     }
-
     const getOtp = await OtpModel.findOne({ email })
-
     if (getOtp.expiresAt < Date.now()) {
         await OtpModel.deleteOne({ email })
         throw new ApiError(400, "OTP Expired")
     }
-
-
     if (getOtp.otp !== otp) {
         throw new ApiError(400, "Invalid OTP")
     }
 
-
     let user = await User.findOne({ email })
-
     if (!user) {
         const tempUser = await TempUser.findOne({ email })
 
         if (!tempUser) {
             throw new ApiError(400, "Error while verifying OTP")
         }
-
         user = await User.create({
             name: tempUser.name,
             username: tempUser.username,
@@ -150,28 +142,53 @@ const verifyOtp = asyncHandler(async (req, res) => {
         })
         await TempUser.deleteOne({ email })
     }
-
     const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id)
-
-
     const createdUser = await User.findById(user._id).select("-password -refreshToken")
-
     const options = {
         httpOnly: true,
         secure: false,
         sameSite: "lax",
     };
-
-
-
     res.status(200)
-        .cookie("accessToken", accessToken, { ...options, maxAge: 24 * 60 * 60 * 1000 })
-        .cookie("refreshToken", refreshToken, { ...options, maxAge: 7 * 24 * 60 * 60 * 1000 })
+        .cookie(
+            "accessToken",
+            accessToken,
+            {
+                ...options,
+                maxAge: 24 * 60 * 60 * 1000
+            }
+        )
+        .cookie(
+            "refreshToken",
+            refreshToken,
+            {
+                ...options,
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            }
+        )
         .json(
             new ApiResponse(200, createdUser, "User registerd successfully")
         )
+})
 
 
+// resend otp
+const resendOtp = asyncHandler(async (req, res) => {
+    const { email } = req.body
+    if (!email) {
+        throw new ApiError(400, "Email is required")
+    }
+    const otp = await otpGenerator(email)
+
+    const response = await sendOtp(email, otp)
+
+    if (!response) {
+        throw new ApiError(400, "Error while sending otp")
+    }
+
+    res.status(200).json(
+        new ApiResponse(200, [], "Otp sent successfully")
+    )
 })
 
 
@@ -212,7 +229,6 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 
 
 //update user page history
-
 const updatePageHistory = asyncHandler(async (req, res) => {
     const { boardId, projectId } = req.body
 
@@ -245,6 +261,7 @@ export {
     registerUser,
     loginUser,
     verifyOtp,
+    resendOtp,
     logOutUser,
     getCurrentUser,
     updatePageHistory

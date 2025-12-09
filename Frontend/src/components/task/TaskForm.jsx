@@ -66,7 +66,7 @@ function TaskForm() {
         fetchTasks();
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setError("Something went wrong");
     } finally {
       setLoading(false);
@@ -83,7 +83,7 @@ function TaskForm() {
         fetchTasks();
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

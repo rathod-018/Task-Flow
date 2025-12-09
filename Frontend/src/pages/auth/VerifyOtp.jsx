@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../api/axios";
 import { useUserContext } from "../../context/UserContext";
+import { toast } from "react-toastify";
 
 const VerifyOtp = () => {
   const navigate = useNavigate();
@@ -9,6 +10,7 @@ const VerifyOtp = () => {
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [time, setTime] = useState(30);
 
   const handleSubmit = async () => {
     setError("");
@@ -42,11 +44,38 @@ const VerifyOtp = () => {
         error?.message ||
         "Something went wrong";
       setError(msg);
-      console.log(error);
     } finally {
       setLoading(false);
     }
   };
+
+  const handleResendOtp = async () => {
+    if (!userEmail) return;
+
+    try {
+      const { data } = await api.post("/user/resend-otp", { email: userEmail });
+      if (data.statusCode === 200) {
+        toast.success("Otp sent");
+        setTime(30);
+      }
+    } catch (error) {
+      const msg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Something went wrong";
+      setError(msg);
+    }
+  };
+
+  // 30 second countdown
+  useEffect(() => {
+    if (time === 0) return;
+    const timmer = setInterval(() => {
+      setTime((p) => p - 1);
+    }, 1000);
+
+    return () => clearInterval(timmer);
+  }, [time]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-neutral-900 to-slate-900 px-4">
@@ -85,7 +114,16 @@ const VerifyOtp = () => {
           <div className="flex justify-between items-center text-sm text-gray-400">
             <div>
               Didn't get a code?{" "}
-              <button className="text-blue-400 hover:underline">Resend</button>
+              {time === 0 ? (
+                <button
+                  className="text-blue-400 hover:underline"
+                  onClick={handleResendOtp}
+                >
+                  Resend
+                </button>
+              ) : (
+                <p className="inline-block text-blue-400  text-base">{time}</p>
+              )}
             </div>
             <Link to="/login" className="text-blue-400 hover:underline">
               Use different account

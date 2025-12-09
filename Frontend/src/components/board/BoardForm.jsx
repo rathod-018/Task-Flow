@@ -57,12 +57,14 @@ const BoardForm = () => {
         toast.success("Board updated successfully");
         closeBoardForm();
       }
+      fetchBoards();
     } catch (error) {
       const msg =
         error?.response?.data?.message ||
         error?.message ||
         "Something went wrong";
       setError(msg);
+      console.err(error);
     } finally {
       setLoading(false);
     }
@@ -83,11 +85,11 @@ const BoardForm = () => {
         closeBoardForm();
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
-  // to close when we click on ouside of board card
+  // close on outside click
   useEffect(() => {
     const handleClick = (e) => {
       if (cardRef.current && !cardRef.current.contains(e.target)) {

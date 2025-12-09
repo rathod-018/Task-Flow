@@ -1,6 +1,10 @@
 import React from "react";
+import { useUserContext } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 function Welcome() {
+  const { user } = useUserContext();
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-neutral-900 via-slate-900 to-indigo-950 px-4">
       <div className="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
@@ -15,14 +19,26 @@ function Welcome() {
 
           <div className="mt-8 flex justify-center md:justify-start gap-4">
             <a
-              href="/signup"
+              onClick={() => {
+                if (user) {
+                  navigate("/home/work-flow");
+                } else {
+                  navigate("/signup");
+                }
+              }}
               className="inline-block px-6 py-3 rounded-lg bg-blue-600 text-white font-medium shadow hover:bg-blue-700 transition"
             >
               Get Started
             </a>
 
             <a
-              href="/login"
+              onClick={() => {
+                if (user) {
+                  navigate("/home/work-flow");
+                } else {
+                  navigate("/login");
+                }
+              }}
               className="inline-block px-6 py-3 rounded-lg bg-white/5 text-white border border-white/10 hover:bg-white/10 transition"
             >
               Sign In

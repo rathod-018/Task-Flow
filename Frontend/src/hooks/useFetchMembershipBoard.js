@@ -19,7 +19,7 @@ export const useMembersByStatus = (status) => {
             setData(data.data)
 
         } catch (err) {
-            console.log(err)
+            console.error(err)
         }
     }
 

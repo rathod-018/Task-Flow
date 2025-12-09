@@ -124,7 +124,9 @@ export const updateInvitedReq = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Invalid memberId")
     }
 
-    res.status(200).json(200, member, "Invite ststus updated successfully")
+    res.status(200).json(
+        new ApiResponse(200, member, "Invite ststus updated successfully")
+    )
 })
 
 export const getMemberByStatus = asyncHandler(async (req, res) => {

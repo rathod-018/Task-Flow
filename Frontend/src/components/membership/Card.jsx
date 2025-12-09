@@ -42,7 +42,7 @@ function Card({ result, members }) {
       <div>
         <img
           src={result?.avatar?.url}
-          alt=""
+          alt="avatar"
           className="w-14 h-14 rounded-full border border-gray-600"
         />
       </div>

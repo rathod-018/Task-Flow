@@ -89,6 +89,7 @@ function Main() {
                       All Boards
                       <img
                         src={isOpen ? angleDown : angleRight}
+                        alt="angle-icon"
                         className="w-[14px] invert opacity-60 brightness-0"
                       />
                     </button>
@@ -120,7 +121,11 @@ function Main() {
       ) : (
         <div className="flex flex-col items-center gap-6 text-center animate-in fade-in zoom-in duration-500">
           <div className="w-24 h-24 rounded-full bg-gradient-to-br  border border-blue-500/30 flex items-center justify-center">
-            <img src={notebook} className="invert w-14 opacity-70" />
+            <img
+              src={notebook}
+              alt="note-book"
+              className="invert w-14 opacity-70"
+            />
           </div>
           <h2 className="text-4xl font-bold text-gray-300 tracking-tight">
             No Board Selected

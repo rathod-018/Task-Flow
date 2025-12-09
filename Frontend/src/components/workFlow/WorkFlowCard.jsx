@@ -85,6 +85,7 @@ function WorkFlowCard({ type, tasks = [] }) {
                 {task.status !== "done" && (
                   <img
                     src={edit}
+                    alt="edit"
                     className="w-4 invert opacity-50 hover:opacity-70 hover:scale-105"
                     onClick={(e) => {
                       e.stopPropagation();

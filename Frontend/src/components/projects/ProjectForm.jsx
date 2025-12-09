@@ -63,7 +63,7 @@ function ProjectForm() {
         fetchAllProjects();
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setError(
         error.response.data.message || error.message || "Something went wrong"
       );
@@ -83,7 +83,7 @@ function ProjectForm() {
         updateLastOpened(boardId, null);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
@@ -93,7 +93,7 @@ function ProjectForm() {
       close();
     }
   }, [boardId]);
-  // to close when we click on ouside of project card
+  // close on ouside click
   useEffect(() => {
     const close = (e) => {
       if (cardRef.current && !cardRef.current.contains(e.target)) {

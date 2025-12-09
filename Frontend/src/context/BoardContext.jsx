@@ -27,7 +27,7 @@ export function BoardContextProvider({ children }) {
         setJoinedBoards(joined?.data?.data);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setError("Error while fetching boards");
     } finally {
       setLoading(false);
