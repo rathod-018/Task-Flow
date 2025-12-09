@@ -14,7 +14,7 @@ import { otpGenerator } from "../utils/otpGenerator.js"
 import { sendOtp } from "../utils/sendOtp.js"
 import { isValidObjectId } from "mongoose"
 
-
+const isProduction = process.env.NODE_ENV === "production";
 
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -146,8 +146,8 @@ const verifyOtp = asyncHandler(async (req, res) => {
     const createdUser = await User.findById(user._id).select("-password -refreshToken")
     const options = {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+        secure: isProduction,
+        sameSite: isProduction ? "None" : "Lax",
     };
     res.status(200)
         .cookie(
@@ -198,20 +198,17 @@ const logOutUser = asyncHandler(async (req, res) => {
             refreshToken: 1
         }
     })
-
     const options = {
-        secure: false,
-        sameSite: "lax",
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "None" : "Lax",
     };
-
-
     res.status(200)
         .clearCookie("accessToken", options)
         .clearCookie("refreshToken", options)
         .json(
             new ApiResponse(200, {}, "User Logged out")
         )
-
 })
 
 // protected controller
