@@ -68,7 +68,7 @@ export function ProjectContextProvider({ children }) {
 
   useEffect(() => {
     fetchAllProjects();
-  }, [activeBoardId]);
+  }, [activeBoardId, projectId]);
 
   useEffect(() => {
     fetchSelectedProject();

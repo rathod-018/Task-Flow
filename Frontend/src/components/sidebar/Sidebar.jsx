@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useUserContext } from "../../context/UserContext";
 import api from "../../api/axios";
 import { toast } from "react-toastify";
 
@@ -17,10 +16,10 @@ import { useProjectContext } from "../../context/ProjectContext";
 import { usePageHistory } from "../../hooks/usePageHisrory";
 import { useUIContext } from "../../context/UIContext";
 import Loader from "../Loader";
+import { useBoardContext } from "../../context/BoardContext";
 
 function Sidebar() {
   const { openSideBar, openProjectForm, openBoardForm } = useUIContext();
-  const { user } = useUserContext();
   const [board, setBoard] = useState(null);
   const [projects, setProjects] = useState([]);
   const [members, setMembers] = useState([]);
@@ -29,28 +28,31 @@ function Sidebar() {
   const [menuOpen, setMenuOpen] = useState(null);
   const { updateLastOpened } = usePageHistory();
   const { projectList, fetchAllProjects, loading } = useProjectContext();
-  const boardId = user?.userPageHistory?.boardId;
+  const { activeBoardId } = useBoardContext();
+  const { selectedProject } = useProjectContext();
 
   // Fetch board info
   useEffect(() => {
     const fetchBoard = async () => {
+      if (!activeBoardId) return setBoard(null);
       try {
-        const { data } = await api.get(`board/${boardId}`);
+        const { data } = await api.get(`board/${activeBoardId}`);
         setBoard(data.data);
       } catch (err) {
         console.error(err);
       }
     };
-    if (boardId) fetchBoard();
-  }, [boardId, user]);
+    fetchBoard();
+  }, [activeBoardId]);
 
   // get joined members
   useEffect(() => {
+    if (!activeBoardId) return setMembers([]);
     const fetchMembers = async () => {
       try {
-        if (boardId) {
+        if (activeBoardId) {
           const { data } = await api.get(
-            `board-member/all?boardId=${boardId}&status=accepted`
+            `board-member/all?boardId=${activeBoardId}&status=accepted`
           );
           setMembers(data.data);
         }
@@ -59,7 +61,7 @@ function Sidebar() {
       }
     };
     fetchMembers();
-  }, [boardId, user]);
+  }, [activeBoardId]);
 
   // sync project list
   useEffect(() => {
@@ -74,7 +76,7 @@ function Sidebar() {
   }, []);
 
   const updateProjectId = (projectId) => {
-    updateLastOpened(boardId, projectId);
+    updateLastOpened(activeBoardId, projectId);
   };
 
   const handleDelete = async (projectId) => {
@@ -83,7 +85,7 @@ function Sidebar() {
       if (data.statusCode) {
         toast.success("Project deleted");
         fetchAllProjects();
-        updateLastOpened(boardId, null);
+        updateLastOpened(activeBoardId, null);
       }
     } catch (err) {
       console.error(err);
@@ -97,7 +99,7 @@ function Sidebar() {
         bg-[#0d1117] text-gray-200 border-r border-[#30363d]
         shadow-inner transition-all duration-300
         overflow-visible
-        ${openSideBar ? "md:w-56 w-80" : "hidden w-14 md:block"}
+        ${openSideBar ? "md:w-56 w-72" : "hidden w-14 md:block"}
       `}
     >
       <div className="relative h-full">
@@ -139,7 +141,7 @@ function Sidebar() {
                     alt="board-icon"
                     className="w-5 invert opacity-80"
                   />
-                  <h2 className="text-sm font-medium">{board.name}</h2>
+                  <h2 className="text-sm font-medium">{board?.name}</h2>
                 </div>
 
                 <div className="flex gap-3 items-center">
@@ -176,8 +178,7 @@ function Sidebar() {
                 {projects.length > 0 ? (
                   <ul className="space-y-1 text-sm">
                     {projects.map((item) => {
-                      const isActive =
-                        user?.userPageHistory?.projectId === item._id;
+                      const isActive = selectedProject?._id === item._id;
                       const isMenuOpen = menuOpen === item._id;
 
                       return (
@@ -219,21 +220,35 @@ function Sidebar() {
                                 className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/10 w-full text-sm"
                                 onClick={() => openProjectForm("read", item)}
                               >
-                                <img src={eye} alt="eye" className="w-4 invert" /> View
+                                <img
+                                  src={eye}
+                                  alt="eye"
+                                  className="w-4 invert"
+                                />{" "}
+                                View
                               </button>
 
                               <button
                                 className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/10 w-full text-sm"
                                 onClick={() => openProjectForm("edit", item)}
                               >
-                                <img src={edit} alt="edit" className="w-4 invert" /> Edit
+                                <img
+                                  src={edit}
+                                  alt="edit"
+                                  className="w-4 invert"
+                                />{" "}
+                                Edit
                               </button>
 
                               <button
                                 className="flex items-center gap-2 px-3 py-1.5 hover:bg-red-600/20 w-full text-sm text-red-400"
                                 onClick={() => handleDelete(item._id)}
                               >
-                                <img src={trash} alt="trash" className="w-4 invert" />{" "}
+                                <img
+                                  src={trash}
+                                  alt="trash"
+                                  className="w-4 invert"
+                                />{" "}
                                 Delete
                               </button>
                             </div>
@@ -251,13 +266,17 @@ function Sidebar() {
             <div className="mt-6 pl-1">
               <div className="flex justify-between items-center pr-2">
                 <div className="flex items-center gap-2">
-                  <img src={userIcon} alt="user-icon" className="w-5 invert opacity-80" />
+                  <img
+                    src={userIcon}
+                    alt="user-icon"
+                    className="w-5 invert opacity-80"
+                  />
                   <h2 className="text-sm font-medium">Members</h2>
                 </div>
 
                 <img
-                    src={membersOpen ? angleDown : angleRight}
-                    alt="angle-icon"
+                  src={membersOpen ? angleDown : angleRight}
+                  alt="angle-icon"
                   className="w-4 invert opacity-60 cursor-pointer"
                   onClick={() => setMembersOpen((prev) => !prev)}
                 />

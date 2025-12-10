@@ -25,12 +25,12 @@ const Home = () => {
       <div className="pt-14 flex h-full">
         <div
           className={`fixed top-14 left-0 h-[calc(100vh-3.5rem)] transition-all duration-300 z-50
-               ${openSideBar ? "md:w-56" : "hidden md:block w-14"}`}
+               ${openSideBar ? "md:w-56" : "hidden md:block md:w-14"}`}
         >
           <Sidebar />
         </div>
         <div
-          className={`h-[calc(100vh-3.5rem)] overflow-auto transition-all duration-300
+          className={`h-[calc(100vh-3.5rem)] overflow-auto transition-all duration-300 w-full
       ${
         openSideBar
           ? "md:ml-56 md:w-[calc(100%-14rem)]"
