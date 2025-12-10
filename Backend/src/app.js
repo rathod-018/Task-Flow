@@ -14,7 +14,10 @@ app.use(cookieparser())
 
 // cors setup
 app.use(cors({
-    origin: ["http://localhost:5173"],
+    origin: [
+        "http://localhost:5173",
+        "https://task-flow-project.netlify.app"
+    ],
     credentials: true
 }))
 
