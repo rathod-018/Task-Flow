@@ -19,47 +19,21 @@ import { useBoardContext } from "../../context/BoardContext";
 import Loader from "../Loader";
 
 function Sidebar() {
-  const { openSideBar, setOpenSideBar, openProjectForm, openBoardForm } =
-    useUIContext();
+  const {
+    openSideBar,
+    setOpenSideBar,
+    openProjectForm,
+    openBoardForm,
+    setMemberInfo,
+  } = useUIContext();
   const { updateLastOpened } = usePageHistory();
   const { projectList, fetchAllProjects, loading } = useProjectContext();
-  const { activeBoardId } = useBoardContext();
+  const { activeBoardId, board, members } = useBoardContext();
   const { selectedProject } = useProjectContext();
-
-  const [board, setBoard] = useState(null);
-  const [members, setMembers] = useState([]);
 
   const [projectOpen, setProjectOpen] = useState(true);
   const [membersOpen, setMembersOpen] = useState(true);
   const [menuOpen, setMenuOpen] = useState(null);
-
-  useEffect(() => {
-    if (!activeBoardId) {
-      setBoard(null);
-      setMembers([]);
-      return;
-    }
-
-    const fetchData = async () => {
-      try {
-        const [boardRes, membersRes] = await Promise.allSettled([
-          api.get(`board/${activeBoardId}`),
-          api.get(`board-member/all?boardId=${activeBoardId}&status=accepted`),
-        ]);
-
-        if (boardRes.status === "fulfilled") {
-          setBoard(boardRes.value.data.data);
-        }
-        if (membersRes.status === "fulfilled") {
-          setMembers(membersRes.value.data.data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch sidebar data", err);
-      }
-    };
-
-    fetchData();
-  }, [activeBoardId]);
 
   useEffect(() => {
     const closeMenu = () => setMenuOpen(null);
@@ -290,6 +264,7 @@ function Sidebar() {
                 )}
               </div>
             )}
+            {/* {member-section} */}
             <div className="mt-6 pl-1">
               <div
                 className="flex justify-between items-center pr-2 cursor-pointer hover:bg-[#161b22] p-1 rounded transition"
@@ -319,14 +294,15 @@ function Sidebar() {
                       {members.map((member) => (
                         <li
                           key={member._id}
-                          className="py-1.5 px-2 rounded-md flex items-center gap-2 hover:bg-[#161b22] transition"
+                          className="py-1.5 px-2 rounded-md flex items-center gap-2 hover:bg-[#161b22] transition cursor-pointer"
+                          onClick={() => setMemberInfo(member)}
                         >
                           <img
                             src={member?.userId?.avatar?.url || userIcon}
                             alt="avatar"
                             className="w-6 h-6 rounded-full border border-[#30363d] object-cover bg-[#0d1117]"
                           />
-                          <span className="text-sm text-gray-300 truncate">
+                          <span className="text-sm text-gray-300 capitalize truncate">
                             {member?.userId?.name}
                           </span>
                         </li>

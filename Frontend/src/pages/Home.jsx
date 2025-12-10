@@ -7,6 +7,7 @@ import BoardForm from "../components/board/BoardForm";
 import ProjectForm from "../components/projects/ProjectForm";
 import AddMember from "../components/membership/AddMember";
 import { useUIContext } from "../context/UIContext";
+import MemberInfo from "../components/membership/MemberInfo";
 
 const Home = () => {
   const {
@@ -16,6 +17,8 @@ const Home = () => {
     addMemberOpen,
     setAddMemberOpen,
     openSideBar,
+    memberInfo,
+    setMemberInfo,
   } = useUIContext();
 
   return (
@@ -70,6 +73,14 @@ const Home = () => {
           onClick={() => setAddMemberOpen(false)}
         >
           <AddMember />
+        </div>
+      )}
+      {memberInfo && (
+        <div
+          className="fixed inset-0 z-50 flex justify-center items-center bg-black/70 backdrop-blur-sm w-screen"
+          onClick={() => setMemberInfo(null)}
+        >
+          <MemberInfo />
         </div>
       )}
     </div>

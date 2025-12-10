@@ -49,7 +49,6 @@ function AddMember() {
         />
       </div>
 
-      {/* Results Grid */}
       <div
         className="grid grid-cols-1 sm:grid-cols-2 gap-4 
                   overflow-y-auto pr-2 custom-scroll 

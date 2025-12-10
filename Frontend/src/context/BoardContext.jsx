@@ -8,20 +8,28 @@ const BoardContext = createContext();
 export function BoardContextProvider({ children }) {
   const { user } = useUserContext();
   const activeBoardId = user?.userPageHistory?.boardId;
+
   const [createdBoards, setCreatedBoards] = useState([]);
   const [joinedBoards, setJoinedBoards] = useState([]);
+
+  const [board, setBoard] = useState(null);
+  const [members, setMembers] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
   const { updateLastOpened } = usePageHistory();
 
   // fetch created and joined boards
   const fetchBoards = async () => {
     try {
       setLoading(true);
+
       const created = await api.get("/board/created");
       if (created?.data?.statusCode === 200) {
         setCreatedBoards(created?.data?.data);
       }
+
       const joined = await api.get("/board/joined");
       if (joined?.data?.statusCode === 200) {
         setJoinedBoards(joined?.data?.data);
@@ -38,10 +46,41 @@ export function BoardContextProvider({ children }) {
     fetchBoards();
   }, []);
 
-  // update boardId if it's null
+
+  // fetch board and members
+  const fetchBoardData = async (boardId) => {
+    if (!boardId) {
+      setBoard(null);
+      setMembers([]);
+      return;
+    }
+
+    try {
+      const [boardRes, memberRes] = await Promise.allSettled([
+        api.get(`/board/${boardId}`),
+        api.get(`/board-member/all?boardId=${boardId}&status=accepted`),
+      ]);
+
+      if (boardRes.status === "fulfilled") {
+        setBoard(boardRes.value.data.data);
+      }
+
+      if (memberRes.status === "fulfilled") {
+        setMembers(memberRes.value.data.data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch board + members", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchBoardData(activeBoardId);
+  }, [activeBoardId]);
+
   useEffect(() => {
     if (loading) return;
     if (activeBoardId) return;
+
     const fallback = createdBoards[0]?._id || joinedBoards[0]?._id || null;
     updateLastOpened(fallback);
   }, [activeBoardId, loading, createdBoards, joinedBoards]);
@@ -54,7 +93,11 @@ export function BoardContextProvider({ children }) {
         loading,
         error,
         fetchBoards,
+        fetchBoardData,
         activeBoardId,
+        board,
+        members,
+        setMembers,
       }}
     >
       {children}

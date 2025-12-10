@@ -12,21 +12,20 @@ function LogIn() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // 1. Redirect if user is already logged in
+
   useEffect(() => {
     if (user) {
       navigate("/home/work-flow");
     }
   }, [user, navigate]);
 
-  // 2. Prevent rendering the form while redirecting
+
   if (user) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    // Clean inputs before sending
     const cleanEmail = email.toLowerCase().trim();
 
     if (!cleanEmail) return setError("Please enter email");
@@ -37,7 +36,7 @@ function LogIn() {
       setLoading(true);
       const { data } = await api.post("/user/login", {
         email: cleanEmail,
-        password, // Don't trim password (some passwords might contain intentional spaces)
+        password,
       });
 
       if (data.statusCode === 200) {

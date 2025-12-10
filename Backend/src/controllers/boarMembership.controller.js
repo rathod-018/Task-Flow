@@ -72,7 +72,7 @@ export const getInvitedBoard = asyncHandler(async (req, res) => {
     })
         .populate({
             path: "boardId",
-            select: "name description createdBy createdAt"
+            select: "name description createdAt"
         })
         .populate({
             path: "invitedBy",
@@ -146,6 +146,10 @@ export const getMemberByStatus = asyncHandler(async (req, res) => {
 
     const members = await BoardMembership.find({ boardId, inviteStatus: status })
         .populate({ path: "userId", select: "name email username avatar" })
+        .populate({
+            path: "boardId",
+            select: "name description ownerId"
+        }).populate({ path: "invitedBy", select: "name email avatar" })
 
     res.status(200).json(
         new ApiResponse(200, members, "Members fetched successfully")

@@ -16,8 +16,7 @@ function AcceptMembership({ data, refresh }) {
         memberId,
         inviteStatus,
       });
-
-      console.log(data);
+      
       if (data?.statusCode === 200) {
         refresh();
         fetchBoards();

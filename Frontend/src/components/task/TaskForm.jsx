@@ -51,7 +51,6 @@ function TaskForm() {
       }
       if (taskForm?.mode == "edit") {
         const taskId = prevData?._id;
-        console.log(taskId);
         const { data } = await api.patch(`/task/update/${taskId}`, fields);
         res = data;
       }

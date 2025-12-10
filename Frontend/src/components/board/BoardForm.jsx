@@ -64,7 +64,7 @@ const BoardForm = () => {
         error?.message ||
         "Something went wrong";
       setError(msg);
-      console.err(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }

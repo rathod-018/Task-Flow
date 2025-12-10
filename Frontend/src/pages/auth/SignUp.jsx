@@ -41,16 +41,17 @@ function SignUp() {
 
     try {
       setLoading(true);
-      const response = await api.post("user/register", {
+      const { data } = await api.post("user/register", {
         name: cleanName,
         username: cleanUsername,
         email: cleanEmail,
         password,
       });
 
-      console.log(response);
-      setUserEmail(cleanEmail);
-      navigate("/verify-otp");
+      if (data.statusCode === 200) {
+        setUserEmail(cleanEmail);
+        navigate("/verify-otp");
+      }
     } catch (error) {
       const msg =
         error?.response?.data?.message ||

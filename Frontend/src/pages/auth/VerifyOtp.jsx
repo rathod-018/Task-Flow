@@ -21,7 +21,6 @@ const VerifyOtp = () => {
     }
   }, [user, userEmail, navigate]);
 
-
   useEffect(() => {
     if (time <= 0) return;
 
@@ -31,7 +30,6 @@ const VerifyOtp = () => {
 
     return () => clearInterval(timerId);
   }, [time]);
-
 
   if (user || !userEmail) return null;
 
@@ -111,8 +109,8 @@ const VerifyOtp = () => {
             type="text"
             inputMode="numeric"
             autoComplete="one-time-code"
-            maxLength={6}
-            placeholder="• • • • • •"
+            maxLength={5}
+            placeholder="• • • • •"
             value={otp}
             onChange={handleOtpChange}
             disabled={loading}

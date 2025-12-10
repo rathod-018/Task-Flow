@@ -41,7 +41,7 @@ function WorkFlowCard({ type, tasks = [] }) {
         fetchTasks();
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error("error while updateing todo");
     }
   };

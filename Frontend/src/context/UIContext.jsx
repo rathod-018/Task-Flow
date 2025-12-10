@@ -18,6 +18,7 @@ export function UIContextProvider({ children }) {
     data: null,
   });
   const [addMemberOpen, setAddMemberOpen] = useState(false);
+  const [memberInfo, setMemberInfo] = useState(null);
   const [openSideBar, setOpenSideBar] = useState(
     () => window.innerWidth >= 768
   );
@@ -40,29 +41,27 @@ export function UIContextProvider({ children }) {
   const openBoardForm = (mode, data) => openForm(setBoardForm, mode, data);
   const closeBoardForm = () => closeForm(setBoardForm);
 
-  return (
-    <UIContext.Provider
-      value={{
-        taskForm,
-        openTaskForm,
-        closeTaskForm,
-        boardForm,
-        openBoardForm,
-        closeBoardForm,
-        projectForm,
-        openProjectForm,
-        closeProjectForm,
-        addMemberOpen,
-        setAddMemberOpen,
-        openSideBar,
-        setOpenSideBar,
-        loading,
-        setLoading,
-      }}
-    >
-      {children}
-    </UIContext.Provider>
-  );
+  const value = {
+    taskForm,
+    openTaskForm,
+    closeTaskForm,
+    boardForm,
+    openBoardForm,
+    closeBoardForm,
+    projectForm,
+    openProjectForm,
+    closeProjectForm,
+    addMemberOpen,
+    setAddMemberOpen,
+    memberInfo,
+    setMemberInfo,
+    openSideBar,
+    setOpenSideBar,
+    loading,
+    setLoading,
+  };
+
+  return <UIContext.Provider value={value}>{children}</UIContext.Provider>;
 }
 
 export const useUIContext = () => {
