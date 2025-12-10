@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api/axios";
-import { useUserContext } from "../../context/UserContext";
+import { toast } from "react-toastify";
 
-function Card({ result, members }) {
-  const { user } = useUserContext();
+function Card({ result, members, boardId }) {
   const [invited, setInvited] = useState(false);
 
   useEffect(() => {
@@ -16,9 +15,10 @@ function Card({ result, members }) {
   }, [result?._id, members]);
 
   const handleInvite = async () => {
+    if (!boardId) return toast.warn("Plz create board to invite");
     try {
       const { data } = await api.post("/board-member/invite", {
-        boardId: user?.userPageHistory?.boardId,
+        boardId,
         userId: result?._id,
       });
 

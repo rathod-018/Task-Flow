@@ -106,7 +106,7 @@ function ProjectForm() {
 
   return (
     <div
-      className="bg-[#18181b] p-6 m-10 w-full  md:w-[45rem] rounded-2xl shadow-xl flex flex-col gap-6 border border-[#2e2e32]"
+      className="bg-[#18181b] p-6 m-4 w-full  md:w-[45rem] rounded-2xl shadow-xl flex flex-col gap-6 border border-[#2e2e32]"
       ref={cardRef}
       onClick={(e) => e.stopPropagation()}
     >

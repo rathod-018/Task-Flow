@@ -104,7 +104,7 @@ const BoardForm = () => {
     <div
       onClick={(e) => e.stopPropagation()}
       ref={cardRef}
-      className="m-10 w-full md:w-[45rem] bg-[#18181b] rounded-xl shadow-2xl p-6 space-y-5 border border-[#2a2a2d]"
+      className="m-4 w-full md:w-[45rem] bg-[#18181b] rounded-xl shadow-2xl p-6 space-y-5 border border-[#2a2a2d]"
     >
       <h2 className="text-2xl font-semibold text-gray-200">
         {boardForm.mode === "read"

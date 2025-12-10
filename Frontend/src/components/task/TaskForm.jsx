@@ -105,7 +105,7 @@ function TaskForm() {
     <div
       ref={cardRef}
       onClick={(e) => e.stopPropagation()}
-      className="md:w-[45rem] w-full m-10 bg-[#18181b] rounded-xl shadow-2xl p-6 space-y-5 border border-[#2a2a2d]"
+      className="md:w-[45rem] w-full m-4 bg-[#18181b] rounded-xl shadow-2xl p-6 space-y-5 border border-[#2a2a2d]"
     >
       <h2 className="text-2xl font-semibold text-gray-200">
         {taskForm?.mode === "read"

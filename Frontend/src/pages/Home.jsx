@@ -66,12 +66,10 @@ const Home = () => {
 
       {addMemberOpen && (
         <div
-          className="fixed inset-0 z-50 flex justify-center items-center bg-black/70 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex justify-center items-center bg-black/70 backdrop-blur-sm w-screen"
           onClick={() => setAddMemberOpen(false)}
         >
-          <div onClick={(e) => e.stopPropagation()}>
-            <AddMember />
-          </div>
+          <AddMember />
         </div>
       )}
     </div>

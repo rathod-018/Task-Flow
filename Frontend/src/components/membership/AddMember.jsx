@@ -3,12 +3,13 @@ import { useUserContext } from "../../context/UserContext";
 import Card from "./Card";
 import api from "../../api/axios";
 import { useMembersByStatus } from "../../hooks/useFetchMembershipBoard";
+import { useBoardContext } from "../../context/BoardContext";
 
 function AddMember() {
   const { user } = useUserContext();
   const [text, setText] = useState("");
   const [results, setResult] = useState([]);
-
+  const { activeBoardId } = useBoardContext();
   const members = useMembersByStatus("pending");
 
   const searchUser = async () => {
@@ -33,27 +34,44 @@ function AddMember() {
 
   return (
     <div
-      className="bg-[#1c1c20] w-full md:w-[60rem] p-6 rounded-2xl max-h-[85vh] min-h-80 flex flex-col overflow-hidden mt-16 mx-10 shadow-xl border border-white/10"
+      className="m-4 md:m-10 w-full md:w-[45rem] bg-[#18181b] rounded-2xl 
+             shadow-[0_0_20px_rgba(0,0,0,0.4)] p-6 space-y-6 border border-white/5"
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="pb-4 mt-2 mx-2">
+      <div className="px-1">
         <input
           type="search"
           placeholder="Search user by username or email"
-          className="bg-[#232327] w-full px-5 py-3 rounded-xl text-gray-200 outline-none border border-white/10 focus:ring-2 focus:ring-blue-500 transition-all"
+          className="bg-[#232327] w-full px-5 py-3 rounded-xl text-gray-200 
+                 outline-none border border-white/10 focus:border-blue-500 
+                 focus:ring-2 focus:ring-blue-500 transition-all duration-200"
           onChange={(e) => setText(e.target.value)}
         />
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 overflow-y-auto pr-3 custom-scroll max-h-[calc(100%-6rem)]">
+
+      {/* Results Grid */}
+      <div
+        className="grid grid-cols-1 sm:grid-cols-2 gap-4 
+                  overflow-y-auto pr-2 custom-scroll 
+                  max-h-[28rem]"
+      >
         {results.length > 0 ? (
           results
-            .filter((result) => result._id !== user?._id)
+            .filter((r) => r._id !== user?._id)
             .map((result) => (
-              <Card result={result} members={members} key={result?._id} />
+              <Card
+                key={result?._id}
+                result={result}
+                members={members}
+                boardId={activeBoardId}
+              />
             ))
         ) : (
-          <div className="col-span-full text-center text-gray-400 mt-10">
-            User not found
+          <div className="col-span-full flex flex-col items-center justify-center min-h-[10rem] text-gray-400">
+            <span className="text-lg font-medium">User not found</span>
+            <p className="text-sm text-gray-500 mt-1">
+              Try searching with full email or username
+            </p>
           </div>
         )}
       </div>
