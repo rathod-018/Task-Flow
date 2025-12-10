@@ -1,39 +1,47 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../../api/axios";
-import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../../context/UserContext";
 
 function LogIn() {
-  const { setUserEmail } = useUserContext();
+  const { user, setUserEmail } = useUserContext();
   const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // 1. Redirect if user is already logged in
+  useEffect(() => {
+    if (user) {
+      navigate("/home/work-flow");
+    }
+  }, [user, navigate]);
+
+  // 2. Prevent rendering the form while redirecting
+  if (user) return null;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    if (!email) {
-      setError("Please enter email");
-      return;
-    } else if (!email.includes("@")) {
-      setError("Invalid email");
-      return;
-    } else if (!password) {
-      setError("Please enter password");
-      return;
-    }
+    // Clean inputs before sending
+    const cleanEmail = email.toLowerCase().trim();
+
+    if (!cleanEmail) return setError("Please enter email");
+    if (!cleanEmail.includes("@")) return setError("Invalid email");
+    if (!password) return setError("Please enter password");
 
     try {
       setLoading(true);
-      const { data } = await api.post("/user/login", { email, password });
-      // console.log(data);
+      const { data } = await api.post("/user/login", {
+        email: cleanEmail,
+        password, // Don't trim password (some passwords might contain intentional spaces)
+      });
 
       if (data.statusCode === 200) {
-        setUserEmail(email);
+        setUserEmail(cleanEmail);
         navigate("/verify-otp");
       }
     } catch (error) {
@@ -42,7 +50,6 @@ function LogIn() {
         error?.message ||
         "Something went wrong";
       setError(msg);
-      return;
     } finally {
       setLoading(false);
     }
@@ -71,11 +78,10 @@ function LogIn() {
               className="p-3 rounded-lg bg-[#0b1220] border border-[#262b33] text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 outline-none"
               type="email"
               placeholder="Email"
+              autoComplete="email"
               value={email}
               disabled={loading}
-              onChange={(e) => {
-                setEmail(e.target.value.toLowerCase().trim());
-              }}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
@@ -85,11 +91,10 @@ function LogIn() {
               className="p-3 rounded-lg bg-[#0b1220] border border-[#262b33] text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 outline-none"
               type="password"
               placeholder="Password"
+              autoComplete="current-password"
               value={password}
               disabled={loading}
-              onChange={(e) => {
-                setPassword(e.target.value.trim());
-              }}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
@@ -101,11 +106,9 @@ function LogIn() {
             {loading ? "Signing in..." : "Log In"}
           </button>
 
-          {error ? (
-            <div className="text-red-500 text-sm mt-2">{error}</div>
-          ) : null}
+          {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
 
-          <p className="text-sm text-gray-400 mt-3">
+          <p className="text-sm text-gray-400 mt-3 text-center">
             Don’t have an account?{" "}
             <Link to="/signup" className="text-blue-400 hover:underline">
               Sign Up

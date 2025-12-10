@@ -1,49 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../api/axios";
 import { useUserContext } from "../../context/UserContext";
 
 function SignUp() {
-  const { setUserEmail } = useUserContext();
+  const { user, setUserEmail } = useUserContext();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/home/work-flow");
+    }
+  }, [user, navigate]);
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+
+  if (user) {
+    return null;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    if (!name) {
-      setError("Please enter name");
-      return;
-    }
-    if (!email.includes("@")) {
-      setError("Invalid email address");
-      return;
-    }
-    if (!password) {
-      setError("Please enter password");
-      return;
-    }
-    if (!username) {
-      setError("Please enter username");
-      return;
-    }
+
+    const cleanEmail = email.toLowerCase().trim();
+    const cleanName = name.trim();
+    const cleanUsername = username.trim();
+
+    if (!cleanName) return setError("Please enter name");
+    if (!cleanUsername) return setError("Please enter username");
+    if (!cleanEmail.includes("@")) return setError("Invalid email address");
+    if (!password) return setError("Please enter password");
+    if (password.length < 6)
+      return setError("Password must be at least 6 characters");
 
     try {
       setLoading(true);
       const response = await api.post("user/register", {
-        name,
-        username,
-        email,
+        name: cleanName,
+        username: cleanUsername,
+        email: cleanEmail,
         password,
       });
 
       console.log(response);
-      setUserEmail(email);
+      setUserEmail(cleanEmail);
       navigate("/verify-otp");
     } catch (error) {
       const msg =
@@ -57,7 +63,7 @@ function SignUp() {
   };
 
   return (
-    <div className="min-h-screen  flex items-center justify-center bg-gradient-to-br from-neutral-900 to-slate-900 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-neutral-900 to-slate-900 px-4">
       <div className="w-full max-w-lg bg-[#0f1720] border border-[#20232a] rounded-2xl p-8 shadow-lg">
         <div className="mb-6 text-center">
           <h2 className="text-2xl font-semibold text-white">
@@ -80,7 +86,7 @@ function SignUp() {
             <input
               className="w-full p-3 rounded-lg bg-[#0b1220] border border-[#262b33] text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 outline-none"
               type="text"
-              id="name"
+              autoComplete="name"
               placeholder="Full name"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -92,7 +98,7 @@ function SignUp() {
             <input
               className="w-full p-3 rounded-lg bg-[#0b1220] border border-[#262b33] text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 outline-none"
               type="text"
-              id="username"
+              autoComplete="username"
               placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -104,10 +110,10 @@ function SignUp() {
             <input
               className="w-full p-3 rounded-lg bg-[#0b1220] border border-[#262b33] text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 outline-none"
               type="email"
-              id="email"
+              autoComplete="email"
               placeholder="Email"
               value={email}
-              onChange={(e) => setEmail(e.target.value.toLowerCase().trim())}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
@@ -116,7 +122,7 @@ function SignUp() {
             <input
               className="w-full p-3 rounded-lg bg-[#0b1220] border border-[#262b33] text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 outline-none"
               type="password"
-              id="pass"
+              autoComplete="new-password"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -131,9 +137,7 @@ function SignUp() {
             {loading ? "Creating..." : "Sign Up"}
           </button>
 
-          {error ? (
-            <div className="text-red-500 text-sm mt-2">{error}</div>
-          ) : null}
+          {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
 
           <p className="text-sm text-gray-400 mt-3 text-center">
             Already have an account?{" "}

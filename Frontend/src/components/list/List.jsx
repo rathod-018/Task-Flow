@@ -11,7 +11,7 @@ function List() {
     setData(taskData);
   }, [taskData]);
   return (
-    <div className="max-h-[36rem] min-w-[60rem] md:mx-10 mt-10 overflow-y-auto custom-scroll border border-white/5 rounded-xl shadow-xl transition">
+    <div className="max-h-[36rem]  min-w-[60rem] md:mx-10 mt-10 overflow-y-auto custom-scroll border border-white/5 rounded-xl shadow-xl transition">
       <table className="w-full text-left text-[15px] font-medium text-zinc-300">
         <thead className="sticky top-0 z-20 bg-[#18181b] border-b border-white/10 text-zinc-400 uppercase text-xs tracking-wide">
           <tr>
